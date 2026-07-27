@@ -47,9 +47,8 @@ The app follows the Windows UI language when it starts. It supports English, Kor
 
 - A capture region must fit entirely within one monitor.
 - Audio, webcam capture, window tracking, editing, and MP4 export are not included.
-- HDR tone mapping is not supported in v0.1.0, so HDR colors or brightness may differ.
+- You can record a display with HDR turned on. SimpleCapGIF automatically adjusts very bright areas for GIF and WebP so they are less likely to look washed out or lose detail. The saved file is standard SDR, not HDR.
 - DRM-protected content may appear black.
-- Video, noise, or other content that changes every frame can exceed 30 MB.
 
 ## License and development
 

@@ -23,6 +23,7 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
     private readonly IDXGIOutputDuplication _duplication;
     private readonly ID3D11VideoDevice _videoDevice;
     private readonly ID3D11VideoContext _videoContext;
+    private readonly ID3D11VideoContext1? _videoContext1;
     private readonly ID3D11Texture2D _scaledTexture;
     private readonly ID3D11Texture2D _stagingTexture;
     private readonly int _localX;
@@ -32,6 +33,8 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
     private ID3D11VideoProcessorEnumerator? _videoEnumerator;
     private ID3D11VideoProcessor? _videoProcessor;
     private ID3D11VideoProcessorOutputView? _videoOutputView;
+    private HdrToneMapper? _hdrToneMapper;
+    private bool _isHdrFrame;
     private bool _disposed;
 
     internal DxgiFrameSource(PixelRect region, PixelSize outputSize)
@@ -45,6 +48,14 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
         {
             _videoDevice = _device.QueryInterface<ID3D11VideoDevice>();
             _videoContext = _context.QueryInterface<ID3D11VideoContext>();
+            try
+            {
+                _videoContext1 = _videoContext.QueryInterface<ID3D11VideoContext1>();
+            }
+            catch
+            {
+                _videoContext1 = null;
+            }
         }
         catch
         {
@@ -113,7 +124,14 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
                 _videoContext.VideoProcessorBlt(_videoProcessor!, _videoOutputView!, 0, streams).CheckError();
             }
 
-            _context.CopyResource(_stagingTexture, _scaledTexture);
+            var processedTexture = _scaledTexture;
+            if (_isHdrFrame)
+            {
+                _hdrToneMapper!.Render(_context);
+                processedTexture = _hdrToneMapper.OutputTexture;
+            }
+
+            _context.CopyResource(_stagingTexture, processedTexture);
             var mapped = _context.Map(_stagingTexture, 0, MapMode.Read, Vortice.Direct3D11.MapFlags.None);
             try
             {
@@ -140,6 +158,12 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
     private void EnsureVideoProcessor(Texture2DDescription inputDescription)
     {
         if (_videoProcessor is not null) return;
+        _isHdrFrame = RequiresHdrToneMapping(inputDescription.Format);
+        if (_isHdrFrame && _videoContext1 is null)
+        {
+            throw new InvalidOperationException(AppStrings.GpuScalingUnavailable);
+        }
+
         var contentDescription = new VideoProcessorContentDescription
         {
             InputFrameFormat = VideoFrameFormat.Progressive,
@@ -152,9 +176,22 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
             Usage = VideoUsage.OptimalQuality,
         };
         _videoEnumerator = _videoDevice.CreateVideoProcessorEnumerator(contentDescription);
+        var outputFormat = _isHdrFrame ? Format.R16G16B16A16_Float : Format.B8G8R8A8_UNorm;
+        if ((_videoEnumerator.CheckVideoProcessorFormat(outputFormat) & VideoProcessorFormatSupport.Output) == 0)
+        {
+            throw new InvalidOperationException(AppStrings.GpuScalingUnavailable);
+        }
+
         _videoProcessor = _videoDevice.CreateVideoProcessor(_videoEnumerator, 0);
+        var outputTexture = _scaledTexture;
+        if (_isHdrFrame)
+        {
+            _hdrToneMapper = new HdrToneMapper(_device, _outputSize.Width, _outputSize.Height);
+            outputTexture = _hdrToneMapper.LinearTexture;
+        }
+
         _videoOutputView = _videoDevice.CreateVideoProcessorOutputView(
-            _scaledTexture,
+            outputTexture,
             _videoEnumerator,
             new VideoProcessorOutputViewDescription
             {
@@ -163,6 +200,13 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
             });
         _videoContext.VideoProcessorSetStreamFrameFormat(_videoProcessor, 0, VideoFrameFormat.Progressive);
         _videoContext.VideoProcessorSetStreamAutoProcessingMode(_videoProcessor, 0, false);
+        if (_videoContext1 is not null)
+        {
+            var colorSpace = _isHdrFrame ? ColorSpaceType.RgbFullG10NoneP709 : ColorSpaceType.RgbFullG22NoneP709;
+            _videoContext1.VideoProcessorSetStreamColorSpace1(_videoProcessor, 0, colorSpace);
+            _videoContext1.VideoProcessorSetOutputColorSpace1(_videoProcessor, colorSpace);
+        }
+
         _videoContext.VideoProcessorSetStreamSourceRect(
             _videoProcessor,
             0,
@@ -206,6 +250,14 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
             surfaceSize.Height - localRegion.Left),
         _ => new RawRect(localRegion.Left, localRegion.Top, localRegion.Right, localRegion.Bottom),
     };
+
+    internal static Format[] GetPreferredDuplicationFormats() =>
+        [Format.R16G16B16A16_Float, Format.B8G8R8A8_UNorm];
+
+    internal static bool RequiresHdrToneMapping(Format format) => format == Format.R16G16B16A16_Float;
+
+    internal static bool IsHdrColorSpace(ColorSpaceType colorSpace) =>
+        colorSpace is ColorSpaceType.RgbFullG2084NoneP2020 or ColorSpaceType.RgbStudioG2084NoneP2020;
 
     private static VideoProcessorRotation ToVideoRotation(ModeRotation rotation) => rotation switch
     {
@@ -251,8 +303,7 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
                         createResult.CheckError();
                         try
                         {
-                            using var output1 = output.QueryInterface<IDXGIOutput1>();
-                            var duplication = output1.DuplicateOutput(device);
+                            var duplication = CreateOutputDuplication(output, device);
                             return (device, context, duplication, bounds, output.Description.Rotation);
                         }
                         catch
@@ -269,6 +320,29 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
         throw new InvalidOperationException(AppStrings.NoDisplayOutput);
     }
 
+    private static IDXGIOutputDuplication CreateOutputDuplication(IDXGIOutput output, ID3D11Device device)
+    {
+        var isHdrOutput = false;
+        try
+        {
+            using var output6 = output.QueryInterface<IDXGIOutput6>();
+            var description = output6.Description1;
+            isHdrOutput = description.BitsPerColor > 8 && IsHdrColorSpace(description.ColorSpace);
+        }
+        catch
+        {
+        }
+
+        if (isHdrOutput)
+        {
+            using var output5 = output.QueryInterface<IDXGIOutput5>();
+            return output5.DuplicateOutput1(device, GetPreferredDuplicationFormats());
+        }
+
+        using var output1 = output.QueryInterface<IDXGIOutput1>();
+        return output1.DuplicateOutput(device);
+    }
+
     private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(_disposed, this);
 
     public void Dispose()
@@ -276,10 +350,12 @@ internal sealed class DxgiFrameSource : ICaptureFrameSource
         if (_disposed) return;
         _disposed = true;
         _videoOutputView?.Dispose();
+        _hdrToneMapper?.Dispose();
         _videoProcessor?.Dispose();
         _videoEnumerator?.Dispose();
         _stagingTexture.Dispose();
         _scaledTexture.Dispose();
+        _videoContext1?.Dispose();
         _videoContext.Dispose();
         _videoDevice.Dispose();
         _duplication.Dispose();

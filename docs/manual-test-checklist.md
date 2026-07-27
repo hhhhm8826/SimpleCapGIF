@@ -82,7 +82,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Low disk space fails safely
 - [ ] Exit/taskbar close in Selecting, Recording, and Encoding leaves no FFmpeg, partial, or session directory
 - [ ] Remote Desktop transition and DXGI access loss fail safely
-- [ ] HDR monitor displays the localized v0.1.0 warning
+- [ ] HDR monitor records without the former warning and produces natural SDR output without washed-out colors or clipped highlights
 - [ ] Protected content limitation is documented in both user READMEs
 
 ## Package

@@ -32,6 +32,24 @@ The capture and encoding paths do not use unbounded queues. One frame buffer is 
 
 The app waits for the recording-state windows to reach DWM composition before creating Desktop Duplication. It then retains the newest frame during a short initial settling interval. This prevents a transient excluded-window frame from becoming the permanent frame of a static recording.
 
+## HDR capture and tone mapping
+
+HDR displays are captured through a linear FP16 path and tone-mapped to SDR for GIF and WebP output. HDR metadata and dynamic range are not preserved in the saved file.
+
+An output is treated as HDR when `IDXGIOutput6` reports more than 8 bits per color and a PQ/BT.2020 color space. For those outputs, Desktop Duplication requests `R16G16B16A16_Float` first and `B8G8R8A8_UNorm` as a fallback. SDR outputs continue to use the original BGRA8 duplication path and do not pass through the HDR shader.
+
+The D3D11 video processor performs crop, resize, and rotation into a linear `R16G16B16A16_Float` texture. A full-screen pixel shader then:
+
+1. Computes Rec. 709 luminance from the linear RGB value.
+2. Leaves luminance at or below the `0.75` knee unchanged.
+3. Compresses brighter values into the remaining SDR range with an exponential shoulder.
+4. Scales RGB by the luminance ratio, clamps it to `[0, 1]`, and applies the standard linear-to-sRGB transfer function.
+5. Writes BGRA8 pixels for cursor composition and the existing FFmpeg encoding pipeline.
+
+This is display-referred conversion for natural-looking SDR animation, not an HDR export pipeline. The fixed curve does not read per-title mastering metadata, preserve values above SDR white, or embed HDR metadata in GIF or WebP.
+
+`HdrToneMappingTests` covers format selection, curve behavior, shader compilation, and shader execution on the D3D11 WARP device. Manual release testing still requires an HDR monitor to check real Desktop Duplication input, highlight detail, color appearance, rotation, cropping, and scaling.
+
 ## Coordinates and DPI
 
 Core `PixelPoint`, `PixelSize`, and `PixelRect` values use integer physical pixels only. WPF DIP conversion happens at the window boundary using per-monitor DPI. Once a region fits entirely inside another monitor, the app switches its active HWND and DPI using physical cursor coordinates. Rotated monitors map coordinates into the unrotated duplication surface before GPU rotation.

@@ -30,7 +30,6 @@ public partial class MainWindow : Window
     private readonly SessionStorage _sessionStorage = SessionStorage.CreateDefault();
     private readonly DispatcherTimer _statisticsTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
     private readonly Dictionary<string, double> _calibrationRatios = [];
-    private readonly HashSet<string> _hdrWarningsShown = new(StringComparer.OrdinalIgnoreCase);
     private MonitorDescriptor? _monitor;
     private JsonSettingsStore? _settingsStore;
     private FfmpegToolchain? _toolchain;
@@ -87,8 +86,6 @@ public partial class MainWindow : Window
             if (_captureExclusionError is not null) throw _captureExclusionError;
             _monitor = MonitorService.GetMonitorAtCursor();
             PositionBorderWindow();
-            WarnIfHdr(_monitor);
-
             _sessionStorage.CleanupOrphans(DateTimeOffset.UtcNow);
             _settingsStore = new JsonSettingsStore(_sessionStorage.SettingsPath);
             var settings = await _settingsStore.LoadAsync();
@@ -523,17 +520,6 @@ public partial class MainWindow : Window
         _isFullScreen = false;
         _toolbarWindow?.SetFullScreenState(false);
         PositionBorderWindow();
-        WarnIfHdr(monitor);
-    }
-
-    private void WarnIfHdr(MonitorDescriptor monitor)
-    {
-        if (!_hdrWarningsShown.Add(monitor.DeviceName) || !MonitorService.IsHdrEnabled(monitor)) return;
-        MessageBox.Show(
-            AppStrings.HdrWarning,
-            AppStrings.HdrWarningTitle,
-            MessageBoxButton.OK,
-            MessageBoxImage.Warning);
     }
 
     private void PositionBorderWindow()
