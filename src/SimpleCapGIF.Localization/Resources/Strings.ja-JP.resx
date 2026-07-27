@@ -32,7 +32,7 @@
   <data name="GifTruncated" xml:space="preserve"><value>GIF データが途中で切れています。</value></data>
   <data name="GifVerificationFailedFormat" xml:space="preserve"><value>GIF の検証に失敗しました。{0}</value></data>
   <data name="GpuScalingUnavailable" xml:space="preserve"><value>このグラフィックスデバイスでは GPU 領域スケーリングを使用できません。</value></data>
-  <data name="HdrWarning" xml:space="preserve"><value>このモニターでは HDR が有効です。SimpleCapGIF v0.1 は HDR トーンマッピングに対応していないため、色や明るさが画面と異なる場合があります。</value></data>
+  <data name="HdrWarning" xml:space="preserve"><value>このモニターでは HDR が有効です。SimpleCapGIF v0.1.0 は HDR トーンマッピングに対応していないため、色や明るさが画面と異なる場合があります。</value></data>
   <data name="HdrWarningTitle" xml:space="preserve"><value>SimpleCapGIF · HDR 非対応</value></data>
   <data name="InvalidSettingsFolder" xml:space="preserve"><value>設定フォルダーが無効です。</value></data>
   <data name="InvalidStateReturnFormat" xml:space="preserve"><value>{0} 状態から選択画面に戻れません。</value></data>

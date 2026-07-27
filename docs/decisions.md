@@ -18,7 +18,7 @@ The bundled FFmpeg native WebP decoder does not read `ANIM/ANMF`. Verification t
 
 ## 2026-07-27 — Static WebP timeline
 
-libwebp may optimize fully identical frames into one still WebP. To preserve the v0.1 duration and infinite-loop contract, reuse that compressed frame bitstream in a minimal explicit `ANIM/ANMF` timeline. Do not introduce artificial pixel changes. A lower output frame count is valid when identical frames were coalesced and the duration matches.
+libwebp may optimize fully identical frames into one still WebP. To preserve the v0.1.0 duration and infinite-loop contract, reuse that compressed frame bitstream in a minimal explicit `ANIM/ANMF` timeline. Do not introduce artificial pixel changes. A lower output frame count is valid when identical frames were coalesced and the duration matches.
 
 ## 2026-07-27 — Decimal megabytes
 

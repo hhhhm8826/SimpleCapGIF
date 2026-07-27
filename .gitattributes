@@ -1,2 +1,8 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# SimpleCapGIF is Windows-only. Keep repository text files as UTF-8 with CRLF line endings.
+* text=auto eol=crlf
+
+*.png binary
+*.ico binary
+*.zip binary
+*.exe binary
+*.dll binary

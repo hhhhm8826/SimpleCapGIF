@@ -12,6 +12,7 @@ This document is the entry point for building, testing, packaging, and contribut
 ## Build and test
 
 ```powershell
+./scripts/verify-text-format.ps1
 ./scripts/fetch-ffmpeg.ps1
 ./scripts/verify-ffmpeg.ps1
 dotnet restore SimpleCapGIF.sln
@@ -27,7 +28,7 @@ The integration suite uses the pinned FFmpeg binaries and includes synthetic GIF
 ./scripts/package.ps1
 ```
 
-The result is `artifacts/package/SimpleCapGIF-v0.1-win-x64.zip`. The portable package contains the self-contained app, pinned FFmpeg binaries, nine language resources, English and Korean user READMEs and their image assets, licenses, and third-party notices. Developer documentation is repository-only.
+The result is `artifacts/package/SimpleCapGIF-v0.1.0-win-x64.zip`. The portable package contains the self-contained app, pinned FFmpeg binaries, nine language resources, English and Korean user READMEs and their image assets, licenses, and third-party notices. Developer documentation is repository-only.
 
 ## Repository map
 

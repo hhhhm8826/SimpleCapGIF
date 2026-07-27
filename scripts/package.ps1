@@ -3,6 +3,11 @@ param([string]$Configuration = 'Release')
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
+$buildPropsPath = Join-Path $repoRoot 'Directory.Build.props'
+[xml]$buildProps = Get-Content -LiteralPath $buildPropsPath -Raw
+$appVersion = [string]$buildProps.Project.PropertyGroup.Version
+if ([string]::IsNullOrWhiteSpace($appVersion)) { throw 'The application version is missing from Directory.Build.props.' }
+$packageName = "SimpleCapGIF-v$appVersion-win-x64"
 $dotnet = (Get-Command dotnet -ErrorAction SilentlyContinue).Source
 if ([string]::IsNullOrWhiteSpace($dotnet) -and (Test-Path 'C:\Program Files\dotnet\dotnet.exe')) { $dotnet = 'C:\Program Files\dotnet\dotnet.exe' }
 if ([string]::IsNullOrWhiteSpace($dotnet)) { throw '.NET 10 SDK was not found.' }
@@ -10,14 +15,19 @@ $ffmpegBin = & (Join-Path $PSScriptRoot 'fetch-ffmpeg.ps1')
 & (Join-Path $PSScriptRoot 'verify-ffmpeg.ps1') -BinRoot $ffmpegBin
 
 $packageRoot = Join-Path $repoRoot 'artifacts\package'
-$publishRoot = Join-Path $packageRoot 'SimpleCapGIF-v0.1-win-x64'
-$zipPath = Join-Path $packageRoot 'SimpleCapGIF-v0.1-win-x64.zip'
+$publishRoot = Join-Path $packageRoot $packageName
+$zipPath = Join-Path $packageRoot "$packageName.zip"
 if (Test-Path -LiteralPath $publishRoot) { Remove-Item -LiteralPath $publishRoot -Recurse -Force }
 if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
 New-Item -ItemType Directory -Force -Path $publishRoot | Out-Null
 
 & $dotnet publish (Join-Path $repoRoot 'src\SimpleCapGIF.App\SimpleCapGIF.App.csproj') --configuration $Configuration --runtime win-x64 --self-contained true --output $publishRoot
 if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed.' }
+
+$publishedExe = Join-Path $publishRoot 'SimpleCapGIF.exe'
+$versionInfo = (Get-Item -LiteralPath $publishedExe).VersionInfo
+if ($versionInfo.ProductVersion -ne $appVersion) { throw "Unexpected product version: $($versionInfo.ProductVersion)" }
+if ($versionInfo.FileVersion -ne "$appVersion.0") { throw "Unexpected file version: $($versionInfo.FileVersion)" }
 
 $ffmpegDestination = Join-Path $publishRoot 'ffmpeg'
 New-Item -ItemType Directory -Force -Path $ffmpegDestination | Out-Null
@@ -30,7 +40,7 @@ New-Item -ItemType Directory -Force -Path $packageImages | Out-Null
 Copy-Item -LiteralPath (Join-Path $repoRoot 'images\simplecapgif-logo.png'), (Join-Path $repoRoot 'images\simplecapgif-app.png'), (Join-Path $repoRoot 'images\simplecapgif-app.ko-KR.png') -Destination $packageImages
 Compress-Archive -Path (Join-Path $publishRoot '*') -DestinationPath $zipPath -CompressionLevel Optimal
 
-if (-not (Test-Path -LiteralPath (Join-Path $publishRoot 'SimpleCapGIF.exe'))) { throw 'SimpleCapGIF.exe is missing from publish output.' }
+if (-not (Test-Path -LiteralPath $publishedExe)) { throw 'SimpleCapGIF.exe is missing from publish output.' }
 $localizedCultures = @('ko-KR', 'ja-JP', 'zh-Hans', 'pt-BR', 'es', 'de-DE', 'fr-FR', 'zh-Hant')
 foreach ($culture in $localizedCultures) {
     $resourcePath = Join-Path $publishRoot "$culture\SimpleCapGIF.Localization.resources.dll"
