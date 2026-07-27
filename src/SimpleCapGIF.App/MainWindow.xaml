@@ -1,0 +1,74 @@
+<Window x:Class="SimpleCapGIF.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localization="clr-namespace:SimpleCapGIF.Localization;assembly=SimpleCapGIF.Localization"
+        mc:Ignorable="d"
+        Title="{x:Static localization:AppStrings.AppName}"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
+        Loaded="OnLoaded"
+        SourceInitialized="OnSourceInitialized"
+        Closing="OnClosing"
+        SizeChanged="OnWindowSizeChanged">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    <Style x:Key="HandleStyle" TargetType="Thumb">
+      <Setter Property="Width" Value="12" />
+      <Setter Property="Height" Value="12" />
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="Black" />
+      <Setter Property="BorderThickness" Value="2" />
+      <Setter Property="Panel.ZIndex" Value="20" />
+      <EventSetter Event="DragDelta" Handler="OnHandleDragDelta" />
+    </Style>
+  </Window.Resources>
+  <Canvas x:Name="RootCanvas">
+    <Border x:Name="SelectionBorder"
+            BorderBrush="Black"
+            BorderThickness="2"
+            Background="Transparent"
+            Panel.ZIndex="5">
+      <Thumb x:Name="MoveThumb"
+             Tag="Move"
+             Cursor="SizeAll"
+             Background="#01000000"
+             BorderThickness="0"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Focusable="False"
+             AutomationProperties.Name="{x:Static localization:AppStrings.MoveCaptureRegion}"
+             DragStarted="OnMoveDragStarted"
+             DragCompleted="OnMoveDragCompleted"
+             DragDelta="OnHandleDragDelta">
+        <Thumb.Template>
+          <ControlTemplate TargetType="Thumb">
+            <Border Background="{TemplateBinding Background}" />
+          </ControlTemplate>
+        </Thumb.Template>
+      </Thumb>
+    </Border>
+
+    <Thumb x:Name="TopLeftHandle" Tag="TopLeft" Cursor="SizeNWSE" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="TopHandle" Tag="Top" Cursor="SizeNS" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="TopRightHandle" Tag="TopRight" Cursor="SizeNESW" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="RightHandle" Tag="Right" Cursor="SizeWE" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="BottomRightHandle" Tag="BottomRight" Cursor="SizeNWSE" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="BottomHandle" Tag="Bottom" Cursor="SizeNS" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="BottomLeftHandle" Tag="BottomLeft" Cursor="SizeNESW" Style="{StaticResource HandleStyle}" />
+    <Thumb x:Name="LeftHandle" Tag="Left" Cursor="SizeWE" Style="{StaticResource HandleStyle}" />
+
+    <Border x:Name="RegionLabelBorder"
+            Padding="8,4"
+            CornerRadius="5"
+            Background="#D91B1D22"
+            Panel.ZIndex="30">
+      <TextBlock Text="{Binding RegionLabel}" Foreground="White" FontSize="12" />
+    </Border>
+  </Canvas>
+</Window>

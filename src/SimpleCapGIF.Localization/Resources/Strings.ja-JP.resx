@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AlreadyRecording" xml:space="preserve"><value>すでに録画中です。</value></data>
+  <data name="AnimationSaveFailedFormat" xml:space="preserve"><value>{0} を保存できませんでした。一時ファイルは削除されました。{1}</value></data>
+  <data name="AppName" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="CaptureStoppedError" xml:space="preserve"><value>録画が停止しました。ディスプレイ構成と空き容量を確認するか、解像度または FPS を下げて再試行してください。</value></data>
+  <data name="CaptureUiExclusionUnavailable" xml:space="preserve"><value>録画枠とツールバーをキャプチャ対象から除外できません。</value></data>
+  <data name="ChangeSaveLocation" xml:space="preserve"><value>保存先を変更</value></data>
+  <data name="DestinationExists" xml:space="preserve"><value>同じ名前のファイルがすでに存在します。</value></data>
+  <data name="DiskSpaceLow" xml:space="preserve"><value>空き容量が不足しているため録画を停止しました。</value></data>
+  <data name="DisplayChanged" xml:space="preserve"><value>ディスプレイ構成またはリモートセッションが変更されたため録画を停止しました。</value></data>
+  <data name="DurationFormat" xml:space="preserve"><value>再生時間が許容範囲外です。予想 {0}、実際 {1}。</value></data>
+  <data name="EmptyEncodingResult" xml:space="preserve"><value>エンコード結果のファイルが空です。</value></data>
+  <data name="ErrorDialogTitle" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="EstimateProfileMissing" xml:space="preserve"><value>サイズ推定プロファイルが設定されていません。</value></data>
+  <data name="EstimateSampleFailed" xml:space="preserve"><value>サイズ推定サンプルをエンコードできませんでした。</value></data>
+  <data name="EstimatedSizeFormat" xml:space="preserve"><value>予想 {0:0.0} MB</value></data>
+  <data name="Exit" xml:space="preserve"><value>終了</value></data>
+  <data name="FfmpegChecksumMismatch" xml:space="preserve"><value>FFmpeg コンポーネントのチェックサムが一致しません。SimpleCapGIF を再ダウンロードしてください。</value></data>
+  <data name="FfmpegMissing" xml:space="preserve"><value>FFmpeg コンポーネントがありません。SimpleCapGIF パッケージを再展開してください。</value></data>
+  <data name="FfmpegStartFailed" xml:space="preserve"><value>FFmpeg プロセスを開始できませんでした。</value></data>
+  <data name="Folder" xml:space="preserve"><value>フォルダー</value></data>
+  <data name="FolderDialogTitle" xml:space="preserve"><value>SimpleCapGIF の保存フォルダーを選択</value></data>
+  <data name="FormatLabel" xml:space="preserve"><value>形式</value></data>
+  <data name="FrameCountFormat" xml:space="preserve"><value>フレーム数が一致しません。予想 {0}、実際 {1}。</value></data>
+  <data name="FrameRate" xml:space="preserve"><value>フレームレート</value></data>
+  <data name="FullScreen" xml:space="preserve"><value>全画面</value></data>
+  <data name="GifBlockInvalid" xml:space="preserve"><value>GIF のブロック構造が無効です。</value></data>
+  <data name="GifHeaderMissing" xml:space="preserve"><value>GIF ヘッダーがありません。</value></data>
+  <data name="GifLoopMissing" xml:space="preserve"><value>GIF の無限ループ情報がありません。</value></data>
+  <data name="GifTruncated" xml:space="preserve"><value>GIF データが途中で切れています。</value></data>
+  <data name="GifVerificationFailedFormat" xml:space="preserve"><value>GIF の検証に失敗しました。{0}</value></data>
+  <data name="GpuScalingUnavailable" xml:space="preserve"><value>このグラフィックスデバイスでは GPU 領域スケーリングを使用できません。</value></data>
+  <data name="HdrWarning" xml:space="preserve"><value>このモニターでは HDR が有効です。SimpleCapGIF v0.1 は HDR トーンマッピングに対応していないため、色や明るさが画面と異なる場合があります。</value></data>
+  <data name="HdrWarningTitle" xml:space="preserve"><value>SimpleCapGIF · HDR 非対応</value></data>
+  <data name="InvalidSettingsFolder" xml:space="preserve"><value>設定フォルダーが無効です。</value></data>
+  <data name="InvalidStateReturnFormat" xml:space="preserve"><value>{0} 状態から選択画面に戻れません。</value></data>
+  <data name="InvalidStateTransitionFormat" xml:space="preserve"><value>{0} から {1} 状態へ移行できません。</value></data>
+  <data name="Location" xml:space="preserve"><value>保存先</value></data>
+  <data name="MoveCaptureRegion" xml:space="preserve"><value>録画範囲を移動</value></data>
+  <data name="NoDisplayOutput" xml:space="preserve"><value>選択範囲を含むディスプレイ出力が見つかりません。</value></data>
+  <data name="NotRecording" xml:space="preserve"><value>進行中の録画はありません。</value></data>
+  <data name="OpenSaveFolder" xml:space="preserve"><value>保存フォルダーを開く</value></data>
+  <data name="Original" xml:space="preserve"><value>オリジナル</value></data>
+  <data name="OutputSize" xml:space="preserve"><value>出力サイズ</value></data>
+  <data name="OverlayPlacementFailed" xml:space="preserve"><value>オーバーレイウィンドウをモニターに配置できませんでした。</value></data>
+  <data name="PerformanceTooSlow" xml:space="preserve"><value>この PC では選択した設定を処理できません。解像度または FPS を下げてください。</value></data>
+  <data name="Record" xml:space="preserve"><value>録画</value></data>
+  <data name="ResolutionTooLarge" xml:space="preserve"><value>選択した解像度は現在のモニターより大きいため使用できません。</value></data>
+  <data name="ReturnToRegion" xml:space="preserve"><value>範囲に戻る</value></data>
+  <data name="SaveAnimationErrorFormat" xml:space="preserve"><value>{0} を保存できませんでした。一時ファイルは削除されました。</value></data>
+  <data name="Saved" xml:space="preserve"><value>保存完了</value></data>
+  <data name="SavedSizeFormat" xml:space="preserve"><value>保存完了 · {0:0.0} MB</value></data>
+  <data name="SaveFolderSettingsError" xml:space="preserve"><value>保存フォルダーの設定を保存できませんでした。</value></data>
+  <data name="Saving" xml:space="preserve"><value>保存中…</value></data>
+  <data name="StartAppError" xml:space="preserve"><value>SimpleCapGIF を起動できませんでした。</value></data>
+  <data name="StartCaptureError" xml:space="preserve"><value>画面キャプチャを開始できませんでした。他の録画アプリを終了して再試行してください。</value></data>
+  <data name="Stop" xml:space="preserve"><value>停止</value></data>
+  <data name="StorageDeviceUnavailable" xml:space="preserve"><value>保存デバイスを確認できません。</value></data>
+  <data name="TempCaptureFailedFormat" xml:space="preserve"><value>一時録画ファイルを作成できませんでした。FFmpeg 終了コード: {0}。{1}</value></data>
+  <data name="ToolbarTitle" xml:space="preserve"><value>SimpleCapGIF ツールバー</value></data>
+  <data name="UnexpectedSessionPath" xml:space="preserve"><value>一時セッションのパスが想定フォルダー外です。</value></data>
+  <data name="UnsupportedFormat" xml:space="preserve"><value>このアニメーション形式はサポートされていません。</value></data>
+  <data name="Verifying" xml:space="preserve"><value>結果を確認中…</value></data>
+  <data name="WebpAnimationMissing" xml:space="preserve"><value>Animated WebP の無限ループ情報がありません。</value></data>
+  <data name="WebpCanvasMissing" xml:space="preserve"><value>WebP のキャンバスサイズを読み取れません。</value></data>
+  <data name="WebpChunkInvalid" xml:space="preserve"><value>WebP チャンクの長さが無効です。</value></data>
+  <data name="WebpContainerInvalid" xml:space="preserve"><value>WebP コンテナーが無効です。</value></data>
+  <data name="WebpFrameCountFormat" xml:space="preserve"><value>WebP のフレーム数が無効です。録画 {0}、出力 {1}。</value></data>
+  <data name="WebpImageMissing" xml:space="preserve"><value>WebP 画像ビットストリームがありません。</value></data>
+  <data name="WebpRiffMissing" xml:space="preserve"><value>WebP RIFF ヘッダーがありません。</value></data>
+  <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>この Windows 環境では録画 UI をキャプチャ対象から除外できません。</value></data>
+  <data name="WrongAnimationFormat" xml:space="preserve"><value>ファイル拡張子と実際の形式が一致しません。</value></data>
+</root>

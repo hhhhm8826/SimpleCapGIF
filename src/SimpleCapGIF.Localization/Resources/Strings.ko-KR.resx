@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AlreadyRecording" xml:space="preserve"><value>이미 녹화 중입니다.</value></data>
+  <data name="AnimationSaveFailedFormat" xml:space="preserve"><value>{0} 저장에 실패했습니다. 임시 파일은 삭제되었습니다. {1}</value></data>
+  <data name="AppName" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="CaptureStoppedError" xml:space="preserve"><value>녹화가 중단되었습니다. 화면 구성과 저장 공간을 확인하거나 해상도나 FPS를 낮춰 다시 시도하세요.</value></data>
+  <data name="CaptureUiExclusionUnavailable" xml:space="preserve"><value>녹화 테두리와 도구 모음을 캡처에서 제외할 수 없습니다.</value></data>
+  <data name="ChangeSaveLocation" xml:space="preserve"><value>저장 위치 변경</value></data>
+  <data name="DestinationExists" xml:space="preserve"><value>같은 이름의 파일이 이미 있습니다.</value></data>
+  <data name="DiskSpaceLow" xml:space="preserve"><value>저장 공간이 부족해 녹화를 중단했습니다.</value></data>
+  <data name="DisplayChanged" xml:space="preserve"><value>화면 구성이나 원격 세션이 변경되어 캡처가 중단되었습니다.</value></data>
+  <data name="DurationFormat" xml:space="preserve"><value>재생 시간이 허용 오차를 벗어났습니다. 예상 {0}, 실제 {1}.</value></data>
+  <data name="EmptyEncodingResult" xml:space="preserve"><value>인코딩 결과 파일이 비어 있습니다.</value></data>
+  <data name="ErrorDialogTitle" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="EstimateProfileMissing" xml:space="preserve"><value>추정 프로필이 설정되지 않았습니다.</value></data>
+  <data name="EstimateSampleFailed" xml:space="preserve"><value>용량 추정 샘플을 인코딩하지 못했습니다.</value></data>
+  <data name="EstimatedSizeFormat" xml:space="preserve"><value>예상 {0:0.0} MB</value></data>
+  <data name="Exit" xml:space="preserve"><value>종료</value></data>
+  <data name="FfmpegChecksumMismatch" xml:space="preserve"><value>FFmpeg 구성 요소의 체크섬이 일치하지 않습니다. SimpleCapGIF을 다시 받아 주세요.</value></data>
+  <data name="FfmpegMissing" xml:space="preserve"><value>FFmpeg 구성 요소가 없습니다. SimpleCapGIF 배포본을 다시 압축 해제해 주세요.</value></data>
+  <data name="FfmpegStartFailed" xml:space="preserve"><value>FFmpeg 프로세스를 시작하지 못했습니다.</value></data>
+  <data name="Folder" xml:space="preserve"><value>폴더</value></data>
+  <data name="FolderDialogTitle" xml:space="preserve"><value>SimpleCapGIF 저장 폴더 선택</value></data>
+  <data name="FormatLabel" xml:space="preserve"><value>형식</value></data>
+  <data name="FrameCountFormat" xml:space="preserve"><value>프레임 수가 일치하지 않습니다. 예상 {0}, 실제 {1}.</value></data>
+  <data name="FrameRate" xml:space="preserve"><value>프레임 속도</value></data>
+  <data name="FullScreen" xml:space="preserve"><value>전체 화면</value></data>
+  <data name="GifBlockInvalid" xml:space="preserve"><value>GIF 블록 구성이 잘못되었습니다.</value></data>
+  <data name="GifHeaderMissing" xml:space="preserve"><value>GIF 헤더가 없습니다.</value></data>
+  <data name="GifLoopMissing" xml:space="preserve"><value>GIF 무한 반복 메타데이터가 없습니다.</value></data>
+  <data name="GifTruncated" xml:space="preserve"><value>GIF 데이터가 중간에서 잘렸습니다.</value></data>
+  <data name="GifVerificationFailedFormat" xml:space="preserve"><value>GIF 검증에 실패했습니다. {0}</value></data>
+  <data name="GpuScalingUnavailable" xml:space="preserve"><value>이 그래픽 장치에서 GPU 영역 축소를 사용할 수 없습니다.</value></data>
+  <data name="HdrWarning" xml:space="preserve"><value>현재 모니터에서 HDR이 켜져 있습니다. SimpleCapGIF v0.1은 HDR 톤 매핑을 지원하지 않아 결과의 색이나 밝기가 다르게 보일 수 있습니다.</value></data>
+  <data name="HdrWarningTitle" xml:space="preserve"><value>SimpleCapGIF · HDR 미지원</value></data>
+  <data name="InvalidSettingsFolder" xml:space="preserve"><value>설정 폴더가 올바르지 않습니다.</value></data>
+  <data name="InvalidStateReturnFormat" xml:space="preserve"><value>{0} 상태에서는 선택 화면으로 복귀할 수 없습니다.</value></data>
+  <data name="InvalidStateTransitionFormat" xml:space="preserve"><value>{0} 상태에서는 {1} 상태로 전환할 수 없습니다.</value></data>
+  <data name="Location" xml:space="preserve"><value>위치</value></data>
+  <data name="MoveCaptureRegion" xml:space="preserve"><value>녹화 영역 이동</value></data>
+  <data name="NoDisplayOutput" xml:space="preserve"><value>선택 영역에 대응하는 디스플레이 출력을 찾지 못했습니다.</value></data>
+  <data name="NotRecording" xml:space="preserve"><value>진행 중인 녹화가 없습니다.</value></data>
+  <data name="OpenSaveFolder" xml:space="preserve"><value>저장 폴더 열기</value></data>
+  <data name="Original" xml:space="preserve"><value>원본</value></data>
+  <data name="OutputSize" xml:space="preserve"><value>출력 크기</value></data>
+  <data name="OverlayPlacementFailed" xml:space="preserve"><value>오버레이 창을 모니터에 배치하지 못했습니다.</value></data>
+  <data name="PerformanceTooSlow" xml:space="preserve"><value>선택한 설정을 현재 PC에서 처리하지 못했습니다. 해상도나 FPS를 낮춰 주세요.</value></data>
+  <data name="Record" xml:space="preserve"><value>녹화</value></data>
+  <data name="ResolutionTooLarge" xml:space="preserve"><value>선택한 해상도가 현재 모니터보다 커서 사용할 수 없습니다.</value></data>
+  <data name="ReturnToRegion" xml:space="preserve"><value>영역 복귀</value></data>
+  <data name="SaveAnimationErrorFormat" xml:space="preserve"><value>{0} 저장에 실패했습니다. 임시 파일은 삭제되었습니다.</value></data>
+  <data name="Saved" xml:space="preserve"><value>저장 완료</value></data>
+  <data name="SavedSizeFormat" xml:space="preserve"><value>저장 완료 · {0:0.0} MB</value></data>
+  <data name="SaveFolderSettingsError" xml:space="preserve"><value>저장 폴더 설정을 저장하지 못했습니다.</value></data>
+  <data name="Saving" xml:space="preserve"><value>저장 중…</value></data>
+  <data name="StartAppError" xml:space="preserve"><value>SimpleCapGIF을 시작하지 못했습니다.</value></data>
+  <data name="StartCaptureError" xml:space="preserve"><value>화면 캡처를 시작하지 못했습니다. 다른 녹화 프로그램을 종료한 뒤 다시 시도하세요.</value></data>
+  <data name="Stop" xml:space="preserve"><value>중단</value></data>
+  <data name="StorageDeviceUnavailable" xml:space="preserve"><value>저장 장치를 확인할 수 없습니다.</value></data>
+  <data name="TempCaptureFailedFormat" xml:space="preserve"><value>임시 녹화 파일 생성에 실패했습니다. FFmpeg 종료 코드: {0}. {1}</value></data>
+  <data name="ToolbarTitle" xml:space="preserve"><value>SimpleCapGIF 도구 모음</value></data>
+  <data name="UnexpectedSessionPath" xml:space="preserve"><value>예상하지 않은 임시 세션 경로입니다.</value></data>
+  <data name="UnsupportedFormat" xml:space="preserve"><value>지원하지 않는 애니메이션 형식입니다.</value></data>
+  <data name="Verifying" xml:space="preserve"><value>결과 확인 중…</value></data>
+  <data name="WebpAnimationMissing" xml:space="preserve"><value>Animated WebP 무한 반복 메타데이터가 없습니다.</value></data>
+  <data name="WebpCanvasMissing" xml:space="preserve"><value>WebP 캔버스 크기를 읽지 못했습니다.</value></data>
+  <data name="WebpChunkInvalid" xml:space="preserve"><value>WebP 청크 길이가 잘못되었습니다.</value></data>
+  <data name="WebpContainerInvalid" xml:space="preserve"><value>WebP 컨테이너가 올바르지 않습니다.</value></data>
+  <data name="WebpFrameCountFormat" xml:space="preserve"><value>WebP 프레임 수가 올바르지 않습니다. 캡처 {0}, 결과 {1}.</value></data>
+  <data name="WebpImageMissing" xml:space="preserve"><value>WebP 이미지 비트스트림이 없습니다.</value></data>
+  <data name="WebpRiffMissing" xml:space="preserve"><value>WebP RIFF 헤더가 없습니다.</value></data>
+  <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>이 Windows 환경에서는 녹화 UI를 화면 캡처에서 제외할 수 없습니다.</value></data>
+  <data name="WrongAnimationFormat" xml:space="preserve"><value>파일 확장자와 실제 형식이 일치하지 않습니다.</value></data>
+</root>

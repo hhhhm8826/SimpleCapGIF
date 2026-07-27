@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AlreadyRecording" xml:space="preserve"><value>A recording is already in progress.</value></data>
+  <data name="AnimationSaveFailedFormat" xml:space="preserve"><value>Could not save {0}. Temporary files were deleted. {1}</value></data>
+  <data name="AppName" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="CaptureStoppedError" xml:space="preserve"><value>Recording stopped. Check the display configuration and storage space, or lower the resolution or FPS and try again.</value></data>
+  <data name="CaptureUiExclusionUnavailable" xml:space="preserve"><value>The recording border and toolbar could not be excluded from capture.</value></data>
+  <data name="ChangeSaveLocation" xml:space="preserve"><value>Change save location</value></data>
+  <data name="DestinationExists" xml:space="preserve"><value>A file with the same name already exists.</value></data>
+  <data name="DiskSpaceLow" xml:space="preserve"><value>Recording stopped because there is not enough disk space.</value></data>
+  <data name="DisplayChanged" xml:space="preserve"><value>Recording stopped because the display configuration or remote session changed.</value></data>
+  <data name="DurationFormat" xml:space="preserve"><value>The playback duration is outside the allowed tolerance. Expected {0}, actual {1}.</value></data>
+  <data name="EmptyEncodingResult" xml:space="preserve"><value>The encoded output file is empty.</value></data>
+  <data name="ErrorDialogTitle" xml:space="preserve"><value>SimpleCapGIF</value></data>
+  <data name="EstimateProfileMissing" xml:space="preserve"><value>The size estimation profile has not been configured.</value></data>
+  <data name="EstimateSampleFailed" xml:space="preserve"><value>Could not encode the size estimation sample.</value></data>
+  <data name="EstimatedSizeFormat" xml:space="preserve"><value>Est. {0:0.0} MB</value></data>
+  <data name="Exit" xml:space="preserve"><value>Exit</value></data>
+  <data name="FfmpegChecksumMismatch" xml:space="preserve"><value>The FFmpeg component checksum does not match. Download SimpleCapGIF again.</value></data>
+  <data name="FfmpegMissing" xml:space="preserve"><value>FFmpeg components are missing. Extract the SimpleCapGIF package again.</value></data>
+  <data name="FfmpegStartFailed" xml:space="preserve"><value>Could not start the FFmpeg process.</value></data>
+  <data name="Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="FolderDialogTitle" xml:space="preserve"><value>Select a SimpleCapGIF save folder</value></data>
+  <data name="FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="FrameCountFormat" xml:space="preserve"><value>Frame count mismatch. Expected {0}, actual {1}.</value></data>
+  <data name="FrameRate" xml:space="preserve"><value>Frame rate</value></data>
+  <data name="FullScreen" xml:space="preserve"><value>Full screen</value></data>
+  <data name="GifBlockInvalid" xml:space="preserve"><value>The GIF block structure is invalid.</value></data>
+  <data name="GifHeaderMissing" xml:space="preserve"><value>The GIF header is missing.</value></data>
+  <data name="GifLoopMissing" xml:space="preserve"><value>The GIF infinite-loop metadata is missing.</value></data>
+  <data name="GifTruncated" xml:space="preserve"><value>The GIF data is truncated.</value></data>
+  <data name="GifVerificationFailedFormat" xml:space="preserve"><value>GIF verification failed. {0}</value></data>
+  <data name="GpuScalingUnavailable" xml:space="preserve"><value>GPU region scaling is not available on this graphics device.</value></data>
+  <data name="HdrWarning" xml:space="preserve"><value>HDR is enabled on this monitor. SimpleCapGIF v0.1 does not support HDR tone mapping, so colors or brightness may differ from the screen.</value></data>
+  <data name="HdrWarningTitle" xml:space="preserve"><value>SimpleCapGIF · HDR not supported</value></data>
+  <data name="InvalidSettingsFolder" xml:space="preserve"><value>The settings folder is invalid.</value></data>
+  <data name="InvalidStateReturnFormat" xml:space="preserve"><value>Cannot return to selection from the {0} state.</value></data>
+  <data name="InvalidStateTransitionFormat" xml:space="preserve"><value>Cannot transition from {0} to {1}.</value></data>
+  <data name="Location" xml:space="preserve"><value>Location</value></data>
+  <data name="MoveCaptureRegion" xml:space="preserve"><value>Move capture region</value></data>
+  <data name="NoDisplayOutput" xml:space="preserve"><value>No display output contains the selected region.</value></data>
+  <data name="NotRecording" xml:space="preserve"><value>There is no recording in progress.</value></data>
+  <data name="OpenSaveFolder" xml:space="preserve"><value>Open save folder</value></data>
+  <data name="Original" xml:space="preserve"><value>Original</value></data>
+  <data name="OutputSize" xml:space="preserve"><value>Output size</value></data>
+  <data name="OverlayPlacementFailed" xml:space="preserve"><value>Could not place the overlay window on the monitor.</value></data>
+  <data name="PerformanceTooSlow" xml:space="preserve"><value>This PC cannot process the selected settings. Lower the resolution or FPS.</value></data>
+  <data name="Record" xml:space="preserve"><value>Record</value></data>
+  <data name="ResolutionTooLarge" xml:space="preserve"><value>The selected resolution is larger than the current monitor.</value></data>
+  <data name="ReturnToRegion" xml:space="preserve"><value>Return to region</value></data>
+  <data name="SaveAnimationErrorFormat" xml:space="preserve"><value>Could not save {0}. Temporary files were deleted.</value></data>
+  <data name="Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="SavedSizeFormat" xml:space="preserve"><value>Saved · {0:0.0} MB</value></data>
+  <data name="SaveFolderSettingsError" xml:space="preserve"><value>Could not save the save-folder setting.</value></data>
+  <data name="Saving" xml:space="preserve"><value>Saving…</value></data>
+  <data name="StartAppError" xml:space="preserve"><value>Could not start SimpleCapGIF.</value></data>
+  <data name="StartCaptureError" xml:space="preserve"><value>Could not start screen capture. Close other recording applications and try again.</value></data>
+  <data name="Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="StorageDeviceUnavailable" xml:space="preserve"><value>Could not determine the storage device.</value></data>
+  <data name="TempCaptureFailedFormat" xml:space="preserve"><value>Could not create the temporary recording file. FFmpeg exit code: {0}. {1}</value></data>
+  <data name="ToolbarTitle" xml:space="preserve"><value>SimpleCapGIF toolbar</value></data>
+  <data name="UnexpectedSessionPath" xml:space="preserve"><value>The temporary session path is outside the expected folder.</value></data>
+  <data name="UnsupportedFormat" xml:space="preserve"><value>This animation format is not supported.</value></data>
+  <data name="Verifying" xml:space="preserve"><value>Verifying result…</value></data>
+  <data name="WebpAnimationMissing" xml:space="preserve"><value>Animated WebP infinite-loop metadata is missing.</value></data>
+  <data name="WebpCanvasMissing" xml:space="preserve"><value>Could not read the WebP canvas size.</value></data>
+  <data name="WebpChunkInvalid" xml:space="preserve"><value>The WebP chunk length is invalid.</value></data>
+  <data name="WebpContainerInvalid" xml:space="preserve"><value>The WebP container is invalid.</value></data>
+  <data name="WebpFrameCountFormat" xml:space="preserve"><value>The WebP frame count is invalid. Captured {0}, output {1}.</value></data>
+  <data name="WebpImageMissing" xml:space="preserve"><value>The WebP image bitstream is missing.</value></data>
+  <data name="WebpRiffMissing" xml:space="preserve"><value>The WebP RIFF header is missing.</value></data>
+  <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>This Windows environment cannot exclude the recording UI from capture.</value></data>
+  <data name="WrongAnimationFormat" xml:space="preserve"><value>The file extension does not match the encoded format.</value></data>
+</root>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Vortice.Direct3D11" />
+    <PackageReference Include="Vortice.DXGI" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleCapGIF.Core\SimpleCapGIF.Core.csproj" />
+    <ProjectReference Include="..\SimpleCapGIF.Localization\SimpleCapGIF.Localization.csproj" />
+  </ItemGroup>
+</Project>
