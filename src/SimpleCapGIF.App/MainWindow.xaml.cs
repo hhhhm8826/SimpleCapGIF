@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
+using System.Windows.Input;
 using System.Windows.Threading;
 using SimpleCapGIF.App.ViewModels;
 using SimpleCapGIF.Core.Geometry;
@@ -15,10 +16,19 @@ using SimpleCapGIF.Windows.Capture;
 using SimpleCapGIF.Windows.Display;
 using SimpleCapGIF.Windows.Encoding;
 using SimpleCapGIF.Windows.Storage;
+using SimpleCapGIF.Windows.Interop;
 using SimpleCapGIF.Localization;
 using Microsoft.Win32;
 
 namespace SimpleCapGIF.App;
+
+internal enum RecordingCommand
+{
+    None,
+    Start,
+    Stop,
+    Cancel,
+}
 
 [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable", Justification = "WPF Window owns and disposes recording resources from its Closing lifecycle.")]
 public partial class MainWindow : Window
@@ -30,6 +40,7 @@ public partial class MainWindow : Window
     private readonly SessionStorage _sessionStorage = SessionStorage.CreateDefault();
     private readonly DispatcherTimer _statisticsTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
     private readonly Dictionary<string, double> _calibrationRatios = [];
+    private readonly SemaphoreSlim _commandGate = new(1, 1);
     private MonitorDescriptor? _monitor;
     private JsonSettingsStore? _settingsStore;
     private FfmpegToolchain? _toolchain;
@@ -37,6 +48,11 @@ public partial class MainWindow : Window
     private FfmpegSampleEstimator? _sampleEstimator;
     private ToolbarWindow? _toolbarWindow;
     private CancellationTokenSource? _operationCancellation;
+    private CancellationTokenSource? _completionCancellation;
+    private GlobalHotKeyService? _globalHotKeys;
+    private RecordingPreferences _recordingPreferences = RecordingPreferences.Default;
+    private string? _lastOutputPath;
+    private bool _hotKeyWarningShown;
     private PixelRect? _customRegion;
     private OutputPreset _customPreset = CaptureSettings.Default.OutputPreset;
     private bool _customPresetUserSelected;
@@ -92,6 +108,7 @@ public partial class MainWindow : Window
             foreach (var pair in settings.CalibrationRatios) _calibrationRatios[pair.Key] = pair.Value;
             _suppressPresetResponse = true;
             _viewModel.ApplySettings(settings.Capture);
+            _recordingPreferences = settings.Recording?.Validate() ?? RecordingPreferences.Default;
             _saveFolder = settings.SaveFolder;
 
             var initialWidth = Math.Clamp(settings.LastCustomRegionSize.Width, SelectionRegionService.MinimumWidth, _monitor.Bounds.Width);
@@ -120,6 +137,7 @@ public partial class MainWindow : Window
             }
 
             CreateToolbarWindow();
+            InitializeGlobalHotKeys();
             UpdateVisualLayout();
         }
         catch (Exception exception)
@@ -212,18 +230,38 @@ public partial class MainWindow : Window
         }
     }
 
-    private async void OnRecordClick(object? sender, EventArgs e)
+    private void OnRecordClick(object? sender, EventArgs e) => _ = StartRecordingAsync();
+
+    private async Task StartRecordingAsync()
     {
         if (_viewModel.State != CaptureUiState.Selecting) return;
+        await _commandGate.WaitAsync();
         try
         {
+            if (_viewModel.State != CaptureUiState.Selecting) return;
             if (!_borderCaptureExcluded || _toolbarWindow?.IsCaptureExcluded != true)
             {
                 throw _captureExclusionError ?? new InvalidOperationException(AppStrings.CaptureUiExclusionUnavailable);
             }
 
+            _completionCancellation?.Cancel();
+            _toolbarWindow?.CloseMenus();
             _toolchain ??= FfmpegToolchain.Resolve();
             _operationCancellation = new CancellationTokenSource();
+            if (_recordingPreferences.StartDelaySeconds > 0)
+            {
+                _stateMachine.StartCountdown();
+                _viewModel.State = CaptureUiState.Countdown;
+                for (var remaining = _recordingPreferences.StartDelaySeconds; remaining > 0; remaining--)
+                {
+                    _viewModel.CountdownSeconds = remaining;
+                    await Task.Delay(TimeSpan.FromSeconds(1), _operationCancellation.Token);
+                }
+            }
+
+            _stateMachine.StartRecording();
+            _viewModel.State = CaptureUiState.Recording;
+            _viewModel.CountdownSeconds = 0;
             _sessionDirectory = _sessionStorage.CreateSessionDirectory();
             _sampleEstimator = new FfmpegSampleEstimator(
                 _toolchain,
@@ -231,19 +269,27 @@ public partial class MainWindow : Window
                 Path.Combine(_sessionDirectory, "Estimate"),
                 sample => Dispatcher.BeginInvoke(() => _sizeEstimator.AddSample(sample)));
             _captureSession = new DxgiCaptureSession(_toolchain, _sampleEstimator);
-            _stateMachine.StartRecording();
-            _viewModel.State = CaptureUiState.Recording;
             _viewModel.Elapsed = TimeSpan.Zero;
             _viewModel.EstimatedBytes = 0;
             var outputSize = _viewModel.OutputSize;
             var calibrationKey = GetCalibrationKey();
             var calibration = _calibrationRatios.GetValueOrDefault(calibrationKey, 1d);
             _sizeEstimator.Reset(new EstimateProfile(_viewModel.SelectedFormat, _viewModel.SelectedPreset, outputSize.Width, outputSize.Height, _viewModel.SelectedFps, calibration));
-            var request = new CaptureRequest(_viewModel.Region, outputSize, _viewModel.SelectedFps, _sessionDirectory);
+            var request = new CaptureRequest(
+                _viewModel.Region,
+                outputSize,
+                _viewModel.SelectedFps,
+                _sessionDirectory,
+                _recordingPreferences.IncludeCursor);
             await PrepareDesktopForCaptureAsync(_operationCancellation.Token);
             await _captureSession.StartAsync(request, _operationCancellation.Token);
             _statisticsTimer.Start();
             _ = ObserveCaptureFailureAsync(_captureSession, _operationCancellation.Token);
+        }
+        catch (OperationCanceledException) when (_operationCancellation?.IsCancellationRequested == true)
+        {
+            await AbortCurrentOperationAsync();
+            ReturnToSelecting();
         }
         catch (Exception exception)
         {
@@ -251,17 +297,24 @@ public partial class MainWindow : Window
             ReturnToSelecting();
             ShowError(AppStrings.StartCaptureError, exception);
         }
+        finally
+        {
+            _commandGate.Release();
+        }
     }
 
-    private async void OnStopClick(object? sender, EventArgs e)
+    private void OnStopClick(object? sender, EventArgs e) => _ = StopRecordingAsync();
+
+    private async Task StopRecordingAsync()
     {
         if (_viewModel.State != CaptureUiState.Recording || _captureSession is null || _toolchain is null) return;
-        _statisticsTimer.Stop();
-        _stateMachine.StartEncoding();
-        _viewModel.State = CaptureUiState.Encoding;
-
+        await _commandGate.WaitAsync();
         try
         {
+            if (_viewModel.State != CaptureUiState.Recording || _captureSession is null || _toolchain is null) return;
+            _statisticsTimer.Stop();
+            _stateMachine.StartEncoding();
+            _viewModel.State = CaptureUiState.Encoding;
             var recordedSession = await _captureSession.StopAsync(_operationCancellation?.Token ?? CancellationToken.None);
             var estimatedAtStop = _sizeEstimator.GetEstimate(recordedSession.Duration).Bytes;
             await _captureSession.DisposeAsync();
@@ -281,13 +334,13 @@ public partial class MainWindow : Window
                 _calibrationRatios[calibrationKey] = OutputSizeEstimator.UpdateCalibration(_calibrationRatios.GetValueOrDefault(calibrationKey, 1d), result.Bytes, estimatedAtStop);
             }
             _viewModel.EstimatedBytes = result.Bytes;
-            _viewModel.StatusText = AppStrings.Format(AppStrings.SavedSizeFormat, result.Bytes / 1_000_000d);
+            _lastOutputPath = result.Path;
+            _viewModel.StatusText = AppStrings.Format(AppStrings.SavedSizeOpenFormat, result.Bytes / 1_000_000d);
             await SaveSettingsAsync();
             CleanupSession();
             _stateMachine.Complete();
             _viewModel.State = CaptureUiState.Completed;
-            await Task.Delay(TimeSpan.FromSeconds(2), _operationCancellation?.Token ?? CancellationToken.None);
-            ReturnToSelecting();
+            StartCompletionTimeout();
         }
         catch (OperationCanceledException)
         {
@@ -300,6 +353,10 @@ public partial class MainWindow : Window
             ReturnToSelecting();
             var formatName = _viewModel.SelectedFormat == AnimationFormat.Gif ? "GIF" : "WebP";
             ShowError(AppStrings.Format(AppStrings.SaveAnimationErrorFormat, formatName), exception);
+        }
+        finally
+        {
+            _commandGate.Release();
         }
     }
 
@@ -349,15 +406,199 @@ public partial class MainWindow : Window
         if (Directory.Exists(_saveFolder)) Process.Start(new ProcessStartInfo(_saveFolder) { UseShellExecute = true });
     }
 
+    private void OnCancelRequested(object? sender, EventArgs e) => _ = CancelRecordingAsync();
+
+    private async Task CancelRecordingAsync()
+    {
+        if (_viewModel.State is not (CaptureUiState.Countdown or CaptureUiState.Recording)) return;
+        _operationCancellation?.Cancel();
+        await _commandGate.WaitAsync();
+        try
+        {
+            if (_viewModel.State is not (CaptureUiState.Countdown or CaptureUiState.Recording)) return;
+            await AbortCurrentOperationAsync();
+            ReturnToSelecting();
+        }
+        finally
+        {
+            _commandGate.Release();
+        }
+    }
+
+    private void OnOpenResultRequested(object? sender, EventArgs e)
+    {
+        if (_viewModel.State != CaptureUiState.Completed || string.IsNullOrWhiteSpace(_lastOutputPath)) return;
+        try
+        {
+            if (!File.Exists(_lastOutputPath)) throw new FileNotFoundException(AppStrings.OpenSavedFileError, _lastOutputPath);
+            Process.Start(new ProcessStartInfo(_lastOutputPath) { UseShellExecute = true });
+            _completionCancellation?.Cancel();
+            ReturnToSelecting();
+        }
+        catch (Exception exception)
+        {
+            ShowError(AppStrings.OpenSavedFileError, exception);
+        }
+    }
+
+    private void StartCompletionTimeout()
+    {
+        _completionCancellation?.Cancel();
+        _completionCancellation?.Dispose();
+        _completionCancellation = new CancellationTokenSource();
+        _ = ReturnAfterCompletionDelayAsync(_completionCancellation.Token);
+    }
+
+    private async Task ReturnAfterCompletionDelayAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            if (_viewModel.State == CaptureUiState.Completed) ReturnToSelecting();
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    private void OnIncludeCursorRequested(bool includeCursor) =>
+        _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { IncludeCursor = includeCursor });
+
+    private void OnStartDelayRequested(int seconds) =>
+        _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { StartDelaySeconds = seconds });
+
+    private void OnGlobalHotKeyRequested(GlobalHotKeyPreset preset) =>
+        _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { GlobalHotKey = preset });
+
+    private async Task UpdateRecordingPreferencesAsync(RecordingPreferences requested)
+    {
+        if (_viewModel.State != CaptureUiState.Selecting)
+        {
+            _toolbarWindow?.SetRecordingPreferences(_recordingPreferences);
+            return;
+        }
+
+        requested = requested.Validate();
+        var previous = _recordingPreferences;
+        var hotKeyChanged = previous.GlobalHotKey != requested.GlobalHotKey;
+        if (hotKeyChanged && _globalHotKeys?.TrySetToggle(requested.GlobalHotKey) != true)
+        {
+            _toolbarWindow?.SetRecordingPreferences(previous);
+            ShowHotKeyUnavailable(GetHotKeyDisplayName(requested.GlobalHotKey));
+            return;
+        }
+
+        _recordingPreferences = requested;
+        _toolbarWindow?.SetRecordingPreferences(requested);
+        try
+        {
+            await SaveSettingsAsync();
+        }
+        catch (Exception exception)
+        {
+            if (hotKeyChanged) _globalHotKeys?.TrySetToggle(previous.GlobalHotKey);
+            _recordingPreferences = previous;
+            _toolbarWindow?.SetRecordingPreferences(previous);
+            ShowError(AppStrings.SaveSettingsError, exception);
+        }
+    }
+
+    private void InitializeGlobalHotKeys()
+    {
+        _globalHotKeys = new GlobalHotKeyService(new WindowInteropHelper(this).Handle);
+        _globalHotKeys.Pressed += OnGlobalHotKeyPressed;
+        if (!_globalHotKeys.TrySetToggle(_recordingPreferences.GlobalHotKey))
+        {
+            ShowHotKeyUnavailable(GetHotKeyDisplayName(_recordingPreferences.GlobalHotKey));
+        }
+
+        if (!_globalHotKeys.TryRegisterCancel())
+        {
+            ShowHotKeyUnavailable("Ctrl+Shift+F12");
+        }
+    }
+
+    private void OnGlobalHotKeyPressed(GlobalHotKeyAction action)
+    {
+        switch (ResolveHotKeyCommand(action, _viewModel.State))
+        {
+            case RecordingCommand.Start:
+                _ = StartRecordingAsync();
+                break;
+            case RecordingCommand.Stop:
+                _ = StopRecordingAsync();
+                break;
+            case RecordingCommand.Cancel:
+                _ = CancelRecordingAsync();
+                break;
+        }
+    }
+
+    internal static RecordingCommand ResolveHotKeyCommand(GlobalHotKeyAction action, CaptureUiState state)
+    {
+        if (action == GlobalHotKeyAction.CancelRecording)
+        {
+            return state is CaptureUiState.Countdown or CaptureUiState.Recording
+                ? RecordingCommand.Cancel
+                : RecordingCommand.None;
+        }
+
+        return state switch
+        {
+            CaptureUiState.Selecting => RecordingCommand.Start,
+            CaptureUiState.Countdown => RecordingCommand.Cancel,
+            CaptureUiState.Recording => RecordingCommand.Stop,
+            _ => RecordingCommand.None,
+        };
+    }
+
+    private void ShowHotKeyUnavailable(string hotKey)
+    {
+        if (_hotKeyWarningShown) return;
+        _hotKeyWarningShown = true;
+        MessageBox.Show(
+            AppStrings.Format(AppStrings.HotKeyUnavailableFormat, hotKey),
+            AppStrings.AppName,
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+    }
+
+    private static string GetHotKeyDisplayName(GlobalHotKeyPreset preset) => preset switch
+    {
+        GlobalHotKeyPreset.Disabled => AppStrings.HotKeyDisabled,
+        GlobalHotKeyPreset.F12 => "F12",
+        GlobalHotKeyPreset.AltF9 => "Alt+F9",
+        GlobalHotKeyPreset.ControlShiftR => "Ctrl+Shift+R",
+        _ => preset.ToString(),
+    };
+
+    private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape) return;
+        e.Handled = true;
+        _ = CancelRecordingAsync();
+    }
+
     private async void OnClosing(object? sender, CancelEventArgs e)
     {
+        _globalHotKeys?.Dispose();
+        _globalHotKeys = null;
+        _completionCancellation?.Cancel();
         _toolbarWindow?.Close();
         _toolbarWindow = null;
         if (_allowClose || (_captureSession is null && _viewModel.State == CaptureUiState.Selecting)) return;
         e.Cancel = true;
         _allowClose = true;
         _operationCancellation?.Cancel();
-        await AbortCurrentOperationAsync();
+        await _commandGate.WaitAsync();
+        try
+        {
+            await AbortCurrentOperationAsync();
+        }
+        finally
+        {
+            _commandGate.Release();
+        }
         Close();
     }
 
@@ -377,6 +618,7 @@ public partial class MainWindow : Window
         await _settingsStore.SaveAsync(new AppSettings
         {
             Capture = captureSettings,
+            Recording = _recordingPreferences,
             SaveFolder = _saveFolder,
             LastCustomRegionSize = (_customRegion ?? _viewModel.Region).Size,
             CalibrationRatios = new Dictionary<string, double>(_calibrationRatios),
@@ -416,6 +658,7 @@ public partial class MainWindow : Window
         if (_stateMachine.State != CaptureUiState.Selecting) _stateMachine.ReturnToSelecting();
         _deferSelectingToolbarPlacement = true;
         _viewModel.State = CaptureUiState.Selecting;
+        _viewModel.CountdownSeconds = 0;
         _operationCancellation?.Dispose();
         _operationCancellation = null;
         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
@@ -504,9 +747,15 @@ public partial class MainWindow : Window
         _toolbarWindow.FolderRequested += OnChooseFolderClick;
         _toolbarWindow.RecordRequested += OnRecordClick;
         _toolbarWindow.StopRequested += OnStopClick;
+        _toolbarWindow.CancelRequested += OnCancelRequested;
+        _toolbarWindow.OpenResultRequested += OnOpenResultRequested;
         _toolbarWindow.OpenFolderRequested += OnOpenFolderClick;
+        _toolbarWindow.IncludeCursorRequested += OnIncludeCursorRequested;
+        _toolbarWindow.StartDelayRequested += OnStartDelayRequested;
+        _toolbarWindow.GlobalHotKeyRequested += OnGlobalHotKeyRequested;
         _toolbarWindow.ExitRequested += OnExitRequested;
         _toolbarWindow.CaptureExclusionFailed += exception => _captureExclusionError = exception;
+        _toolbarWindow.SetRecordingPreferences(_recordingPreferences);
         _toolbarWindow.Show();
         if (_captureExclusionError is not null) throw _captureExclusionError;
     }
@@ -558,6 +807,9 @@ public partial class MainWindow : Window
         RegionLabelBorder.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         Canvas.SetLeft(RegionLabelBorder, localX + 8);
         Canvas.SetTop(RegionLabelBorder, Math.Max(0, localY - RegionLabelBorder.DesiredSize.Height - 6));
+
+        Canvas.SetLeft(CountdownBorder, localX + ((width - CountdownBorder.Width) / 2));
+        Canvas.SetTop(CountdownBorder, localY + ((height - CountdownBorder.Height) / 2));
 
         if (_toolbarWindow is null || _deferSelectingToolbarPlacement && _viewModel.State == CaptureUiState.Selecting) return;
         var toolbarPixels = _toolbarWindow.MeasurePhysicalSize(_monitor.ScaleX, _monitor.ScaleY);

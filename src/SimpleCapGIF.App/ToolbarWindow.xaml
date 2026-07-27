@@ -12,7 +12,8 @@
         ShowInTaskbar="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="Manual"
-        SourceInitialized="OnSourceInitialized">
+        SourceInitialized="OnSourceInitialized"
+        PreviewKeyDown="OnPreviewKeyDown">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <converters:OptionDisplayConverter x:Key="OptionDisplay" />
@@ -56,7 +57,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
-          <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,40,0">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,78,0">
             <Button x:Name="RecordButton"
                     Style="{StaticResource ActionButtonStyle}"
                     ToolTip="{x:Static localization:AppStrings.Record}"
@@ -80,12 +81,27 @@
           </Grid>
         </Grid>
 
+        <StackPanel Orientation="Horizontal" Margin="0,0,40,0" Visibility="{Binding IsCountingDown, Converter={StaticResource BoolToVisibility}}">
+          <Button Style="{StaticResource ActionButtonStyle}"
+                  ToolTip="{x:Static localization:AppStrings.CancelWithoutSaving}"
+                  AutomationProperties.Name="{x:Static localization:AppStrings.CancelWithoutSaving}"
+                  Click="OnCancelClick">
+            <Path Width="12" Height="12" Stretch="Uniform" Fill="White" Data="M2,2 L10,10 M10,2 L2,10" Stroke="White" StrokeThickness="2" />
+          </Button>
+          <TextBlock Text="{Binding CountdownText}" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="18" FontWeight="SemiBold" />
+        </StackPanel>
+
         <StackPanel Orientation="Horizontal" Margin="0,0,40,0" Visibility="{Binding IsRecording, Converter={StaticResource BoolToVisibility}}">
           <Button x:Name="StopButton"
                   Style="{StaticResource ActionButtonStyle}"
                   ToolTip="{x:Static localization:AppStrings.Stop}"
                   AutomationProperties.Name="{x:Static localization:AppStrings.Stop}"
                   Click="OnStopClick">
+            <Button.ContextMenu>
+              <ContextMenu Opened="OnCaptureContextMenuOpened">
+                <MenuItem Header="{x:Static localization:AppStrings.CancelWithoutSavingHotKey}" Click="OnCancelClick" />
+              </ContextMenu>
+            </Button.ContextMenu>
             <Rectangle Width="11" Height="11" Fill="White" />
           </Button>
           <TextBlock Text="{Binding ElapsedText}" Foreground="White" VerticalAlignment="Center" Margin="8,0" FontFamily="Consolas" />
@@ -106,30 +122,61 @@
         <TextBlock Text="{x:Static localization:AppStrings.Saving}" Foreground="White" Margin="12,6,52,6" Visibility="{Binding IsEncoding, Converter={StaticResource BoolToVisibility}}" />
 
         <StackPanel Orientation="Horizontal" Margin="0,0,40,0" Visibility="{Binding IsCompleted, Converter={StaticResource BoolToVisibility}}">
-          <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" Margin="8,0">
-            <TextBlock.Style>
-              <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
+          <Button x:Name="OpenResultButton"
+                  Content="{Binding StatusText}"
+                  ToolTip="{x:Static localization:AppStrings.OpenSavedFile}"
+                  AutomationProperties.Name="{x:Static localization:AppStrings.OpenSavedFile}"
+                  Click="OnOpenResultClick">
+            <Button.Style>
+              <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding IsSizeWarning}" Value="True">
                     <Setter Property="Foreground" Value="#FFFF4D58" />
                   </DataTrigger>
                 </Style.Triggers>
               </Style>
-            </TextBlock.Style>
-          </TextBlock>
+            </Button.Style>
+          </Button>
           <Button Content="{x:Static localization:AppStrings.Folder}" ToolTip="{x:Static localization:AppStrings.OpenSaveFolder}" AutomationProperties.Name="{x:Static localization:AppStrings.OpenSaveFolder}" Click="OnOpenFolderClick" />
         </StackPanel>
       </Grid>
 
-      <Button x:Name="ExitButton"
-              Style="{StaticResource ExitButtonStyle}"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Top"
-              Content="×"
-              ToolTip="{x:Static localization:AppStrings.Exit}"
-              AutomationProperties.Name="{x:Static localization:AppStrings.Exit}"
-              Click="OnExitClick" />
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Button x:Name="SettingsButton"
+                Style="{StaticResource ExitButtonStyle}"
+                Visibility="{Binding IsSelecting, Converter={StaticResource BoolToVisibility}}"
+                ToolTip="{x:Static localization:AppStrings.Settings}"
+                AutomationProperties.Name="{x:Static localization:AppStrings.Settings}"
+                Click="OnSettingsClick">
+          <Button.ContextMenu>
+            <ContextMenu x:Name="SettingsMenu" Opened="OnSettingsContextMenuOpened">
+              <MenuItem x:Name="IncludeCursorMenuItem" Header="{x:Static localization:AppStrings.IncludeCursor}" IsCheckable="True" StaysOpenOnClick="True" Click="OnIncludeCursorClick" />
+              <MenuItem Header="{x:Static localization:AppStrings.StartDelay}">
+                <MenuItem x:Name="ImmediateDelayMenuItem" Header="{x:Static localization:AppStrings.StartDelayImmediate}" IsCheckable="True" Tag="0" Click="OnStartDelayClick" />
+                <MenuItem x:Name="ThreeSecondDelayMenuItem" Header="{x:Static localization:AppStrings.StartDelayThreeSeconds}" IsCheckable="True" Tag="3" Click="OnStartDelayClick" />
+                <MenuItem x:Name="FiveSecondDelayMenuItem" Header="{x:Static localization:AppStrings.StartDelayFiveSeconds}" IsCheckable="True" Tag="5" Click="OnStartDelayClick" />
+              </MenuItem>
+              <MenuItem Header="{x:Static localization:AppStrings.RecordingHotKey}">
+                <MenuItem x:Name="F12HotKeyMenuItem" Header="F12" IsCheckable="True" Tag="F12" Click="OnHotKeyClick" />
+                <MenuItem x:Name="AltF9HotKeyMenuItem" Header="Alt+F9" IsCheckable="True" Tag="AltF9" Click="OnHotKeyClick" />
+                <MenuItem x:Name="ControlShiftRHotKeyMenuItem" Header="Ctrl+Shift+R" IsCheckable="True" Tag="ControlShiftR" Click="OnHotKeyClick" />
+                <MenuItem x:Name="DisabledHotKeyMenuItem" Header="{x:Static localization:AppStrings.HotKeyDisabled}" IsCheckable="True" Tag="Disabled" Click="OnHotKeyClick" />
+              </MenuItem>
+              <Separator />
+              <MenuItem Header="{x:Static localization:AppStrings.CancelWithoutSavingHotKey}" IsEnabled="False" />
+            </ContextMenu>
+          </Button.ContextMenu>
+          <Viewbox Width="15" Height="15">
+            <Path Fill="White" Data="M19.14,12.94 C19.18,12.63 19.2,12.32 19.2,12 C19.2,11.68 19.18,11.36 19.13,11.06 L21.16,9.48 L19.24,6.16 L16.85,7.12 C16.36,6.74 15.82,6.42 15.23,6.18 L14.87,3.64 L11.03,3.64 L10.67,6.18 C10.08,6.42 9.54,6.75 9.05,7.13 L6.66,6.17 L4.74,9.49 L6.77,11.07 C6.72,11.37 6.69,11.69 6.69,12 C6.69,12.32 6.72,12.64 6.77,12.94 L4.74,14.52 L6.66,17.84 L9.05,16.88 C9.54,17.26 10.08,17.58 10.67,17.82 L11.03,20.36 L14.87,20.36 L15.23,17.82 C15.82,17.58 16.36,17.25 16.85,16.87 L19.24,17.83 L21.16,14.51 L19.14,12.94 Z M12.95,15.2 C11.18,15.2 9.75,13.77 9.75,12 C9.75,10.23 11.18,8.8 12.95,8.8 C14.72,8.8 16.15,10.23 16.15,12 C16.15,13.77 14.72,15.2 12.95,15.2 Z" />
+          </Viewbox>
+        </Button>
+        <Button x:Name="ExitButton"
+                Style="{StaticResource ExitButtonStyle}"
+                Content="×"
+                ToolTip="{x:Static localization:AppStrings.Exit}"
+                AutomationProperties.Name="{x:Static localization:AppStrings.Exit}"
+                Click="OnExitClick" />
+      </StackPanel>
     </Grid>
   </Border>
 </Window>

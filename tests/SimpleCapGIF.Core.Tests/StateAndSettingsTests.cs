@@ -24,6 +24,22 @@ public sealed class StateAndSettingsTests
         Assert.Throws<InvalidOperationException>(sut.StartEncoding);
     }
 
+    [Fact]
+    public void StateMachineSupportsCountdownAndCancellation()
+    {
+        var sut = new CaptureStateMachine();
+        sut.StartCountdown();
+        Assert.Equal(CaptureUiState.Countdown, sut.State);
+        sut.StartRecording();
+        Assert.Equal(CaptureUiState.Recording, sut.State);
+        sut.ReturnToSelecting();
+        Assert.Equal(CaptureUiState.Selecting, sut.State);
+
+        sut.StartCountdown();
+        sut.ReturnToSelecting();
+        Assert.Equal(CaptureUiState.Selecting, sut.State);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -77,6 +93,12 @@ public sealed class StateAndSettingsTests
                 FpsUserSelected = true,
             },
             SaveFolder = Path.Combine(directory, "output"),
+            Recording = new RecordingPreferences
+            {
+                IncludeCursor = false,
+                StartDelaySeconds = 3,
+                GlobalHotKey = GlobalHotKeyPreset.AltF9,
+            },
             LastCustomRegionSize = new PixelSize(960, 540),
             CalibrationRatios = new Dictionary<string, double> { ["WebP:Recommended"] = 1.15 },
         };
@@ -88,6 +110,7 @@ public sealed class StateAndSettingsTests
 
             Assert.Equal(expected.Capture, actual.Capture);
             Assert.Equal(expected.SaveFolder, actual.SaveFolder);
+            Assert.Equal(expected.Recording, actual.Recording);
             Assert.Equal(expected.LastCustomRegionSize, actual.LastCustomRegionSize);
             Assert.Equal(expected.CalibrationRatios, actual.CalibrationRatios);
         }
@@ -95,6 +118,48 @@ public sealed class StateAndSettingsTests
         {
             if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
         }
+    }
+
+    [Fact]
+    public async Task OlderSettingsUseRecordingPreferenceDefaults()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"SimpleCapGIF-settings-{Guid.NewGuid():N}.json");
+        try
+        {
+            await File.WriteAllTextAsync(path, """
+                {
+                  "SaveFolder": "C:\\captures"
+                }
+                """);
+
+            var settings = await new JsonSettingsStore(path).LoadAsync();
+
+            Assert.Equal(RecordingPreferences.Default, settings.Recording);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(10)]
+    public void RecordingPreferencesNormalizeUnsupportedDelay(int seconds)
+    {
+        var preferences = RecordingPreferences.Default with { StartDelaySeconds = seconds };
+
+        Assert.Equal(0, preferences.Validate().StartDelaySeconds);
+    }
+
+    [Fact]
+    public void RecordingPreferencesNormalizeUnknownHotKey()
+    {
+        var preferences = RecordingPreferences.Default with { GlobalHotKey = (GlobalHotKeyPreset)999 };
+
+        Assert.Equal(GlobalHotKeyPreset.F12, preferences.Validate().GlobalHotKey);
     }
 
     [Fact]

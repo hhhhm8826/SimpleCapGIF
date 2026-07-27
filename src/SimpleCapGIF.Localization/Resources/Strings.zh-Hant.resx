@@ -17,4 +17,20 @@
   <data name="ToolbarTitle" xml:space="preserve"><value>SimpleCapGIF 工具列</value></data><data name="UnexpectedSessionPath" xml:space="preserve"><value>暫存工作階段路徑位於預期資料夾之外。</value></data><data name="UnsupportedFormat" xml:space="preserve"><value>不支援此動畫格式。</value></data><data name="Verifying" xml:space="preserve"><value>正在驗證結果…</value></data>
   <data name="WebpAnimationMissing" xml:space="preserve"><value>缺少 Animated WebP 無限循環中繼資料。</value></data><data name="WebpCanvasMissing" xml:space="preserve"><value>無法讀取 WebP 畫布大小。</value></data><data name="WebpChunkInvalid" xml:space="preserve"><value>WebP 區塊長度無效。</value></data><data name="WebpContainerInvalid" xml:space="preserve"><value>WebP 容器無效。</value></data><data name="WebpFrameCountFormat" xml:space="preserve"><value>WebP 畫格數無效。擷取 {0}，輸出 {1}。</value></data><data name="WebpImageMissing" xml:space="preserve"><value>缺少 WebP 影像位元流。</value></data><data name="WebpRiffMissing" xml:space="preserve"><value>缺少 WebP RIFF 標頭。</value></data>
   <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>此 Windows 環境無法從擷取中排除錄製介面。</value></data><data name="WrongAnimationFormat" xml:space="preserve"><value>副檔名與編碼格式不符。</value></data>
+  <data name="Settings" xml:space="preserve"><value>設定</value></data>
+  <data name="IncludeCursor" xml:space="preserve"><value>包含滑鼠游標</value></data>
+  <data name="StartDelay" xml:space="preserve"><value>開始延遲</value></data>
+  <data name="StartDelayImmediate" xml:space="preserve"><value>立即</value></data>
+  <data name="StartDelayThreeSeconds" xml:space="preserve"><value>3 秒</value></data>
+  <data name="StartDelayFiveSeconds" xml:space="preserve"><value>5 秒</value></data>
+  <data name="RecordingHotKey" xml:space="preserve"><value>錄製/停止快速鍵</value></data>
+  <data name="HotKeyDisabled" xml:space="preserve"><value>關閉</value></data>
+  <data name="CancelWithoutSaving" xml:space="preserve"><value>取消且不儲存</value></data>
+  <data name="CancelWithoutSavingHotKey" xml:space="preserve"><value>取消且不儲存 · Ctrl+Shift+F12</value></data>
+  <data name="HotKeyUnavailableFormat" xml:space="preserve"><value>快速鍵 {0} 已被使用。請在設定中選擇其他快速鍵。</value></data>
+  <data name="SaveSettingsError" xml:space="preserve"><value>無法儲存設定。</value></data>
+  <data name="OpenSavedFile" xml:space="preserve"><value>開啟已儲存的檔案</value></data>
+  <data name="OpenSavedFileError" xml:space="preserve"><value>無法開啟已儲存的檔案。</value></data>
+  <data name="SavedSizeOpenFormat" xml:space="preserve"><value>已儲存 · {0:0.0} MB · 開啟</value></data>
+  <data name="RecordingCountdown" xml:space="preserve"><value>錄製開始倒數</value></data>
 </root>

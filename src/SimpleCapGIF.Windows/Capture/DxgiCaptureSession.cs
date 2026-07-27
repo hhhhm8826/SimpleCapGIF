@@ -174,7 +174,10 @@ public sealed class DxgiCaptureSession : ICaptureSession
                     source.CopyCurrentFrame(frame);
                 }
 
-                _cursorCompositor.Composite(frame, request.OutputSize, request.Region);
+                if (request.IncludeCursor)
+                {
+                    _cursorCompositor.Composite(frame, request.OutputSize, request.Region);
+                }
                 _frameObserver?.OnFrame(frame, request.OutputSize, _clock?.Elapsed ?? TimeSpan.Zero);
                 var writeStart = Stopwatch.GetTimestamp();
                 await process.StandardInput.BaseStream.WriteAsync(frame, cancellationToken).ConfigureAwait(false);

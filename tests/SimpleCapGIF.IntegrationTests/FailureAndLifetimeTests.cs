@@ -150,6 +150,39 @@ public sealed class FailureAndLifetimeTests
         }
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CaptureRequestControlsCursorComposition(bool includeCursor)
+    {
+        var directory = CreateTemporaryDirectory();
+        var compositor = new CountingCursorCompositor();
+        try
+        {
+            await using var capture = new DxgiCaptureSession(
+                FfmpegToolchain.Resolve(),
+                new TransitioningFrameSourceFactory(),
+                compositor);
+            var request = new CaptureRequest(
+                new PixelRect(0, 0, 160, 90),
+                new PixelSize(160, 90),
+                5,
+                directory,
+                includeCursor);
+
+            await capture.StartAsync(request, CancellationToken.None);
+            await Task.Delay(TimeSpan.FromMilliseconds(450));
+            _ = await capture.StopAsync(CancellationToken.None);
+
+            if (includeCursor) Assert.True(compositor.CallCount > 0);
+            else Assert.Equal(0, compositor.CallCount);
+        }
+        finally
+        {
+            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        }
+    }
+
     [Fact]
     public void SessionStorageRemovesOnlyOldOrExplicitInRootSessions()
     {
@@ -226,6 +259,13 @@ public sealed class FailureAndLifetimeTests
         public void Composite(byte[] target, PixelSize targetSize, PixelRect sourceRegion)
         {
         }
+    }
+
+    private sealed class CountingCursorCompositor : ICursorFrameCompositor
+    {
+        public int CallCount { get; private set; }
+
+        public void Composite(byte[] target, PixelSize targetSize, PixelRect sourceRegion) => CallCount++;
     }
 
     private sealed class FirstPixelObserver : ICaptureFrameObserver

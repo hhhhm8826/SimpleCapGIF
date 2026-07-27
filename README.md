@@ -28,6 +28,9 @@ SimpleCapGIF is a minimal region recorder for GIF and Animated WebP on Windows 1
 - **Location** changes the save folder. **Folder** opens the current save folder.
 - Choosing a resolution preset resizes the region to that exact physical-pixel size. Manual resizing switches the preset to **Original**; moving the region keeps the preset.
 - The default is GIF at `800×450 · 10 FPS`. WebP defaults to 15 FPS unless you selected an FPS manually.
+- **F12** starts recording and pressing it again stops and saves. **Ctrl+Shift+F12** cancels without saving; the recording hotkey can be changed or disabled in Settings.
+- Use the gear menu to include or hide the mouse cursor and choose an immediate, 3-second, or 5-second start delay.
+- Click the completion message within five seconds to open the saved file. To discard a recording, right-click Stop or press **Esc** while SimpleCapGIF has focus.
 - The estimated output size turns red at 30 MB. SimpleCapGIF warns instead of silently lowering quality.
 - Use the toolbar **×** or the taskbar close command to exit. Active FFmpeg work and temporary files are cleaned up first.
 

@@ -42,7 +42,7 @@ public sealed partial class LocalizationTests
     public void EveryLocalizedResourceHasTheEnglishKeysAndPlaceholders()
     {
         var english = ReadExactResource(CultureInfo.GetCultureInfo("en-US"));
-        Assert.Equal(71, english.Count);
+        Assert.Equal(87, english.Count);
 
         foreach (var culture in UiCultureResolver.SupportedCultures)
         {

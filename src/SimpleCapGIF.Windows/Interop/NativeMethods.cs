@@ -11,6 +11,14 @@ internal static partial class NativeMethods
     internal const int MdtEffectiveDpi = 0;
     internal const uint CursorShowing = 0x00000001;
 
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool RegisterHotKey(nint window, int id, uint modifiers, uint virtualKey);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool UnregisterHotKey(nint window, int id);
+
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool GetCursorPos(out NativePoint point);

@@ -15,6 +15,7 @@
         Loaded="OnLoaded"
         SourceInitialized="OnSourceInitialized"
         Closing="OnClosing"
+        PreviewKeyDown="OnPreviewKeyDown"
         SizeChanged="OnWindowSizeChanged">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
@@ -69,6 +70,24 @@
             Background="#D91B1D22"
             Panel.ZIndex="30">
       <TextBlock Text="{Binding RegionLabel}" Foreground="White" FontSize="12" />
+    </Border>
+
+    <Border x:Name="CountdownBorder"
+            Width="96"
+            Height="96"
+            CornerRadius="48"
+            Background="#D91B1D22"
+            BorderBrush="#FFE33B46"
+            BorderThickness="3"
+            Visibility="{Binding IsCountingDown, Converter={StaticResource BoolToVisibility}}"
+            Panel.ZIndex="40"
+            AutomationProperties.Name="{x:Static localization:AppStrings.RecordingCountdown}">
+      <TextBlock Text="{Binding CountdownText}"
+                 Foreground="White"
+                 FontSize="46"
+                 FontWeight="SemiBold"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center" />
     </Border>
   </Canvas>
 </Window>

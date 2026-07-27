@@ -75,4 +75,20 @@
   <data name="WebpRiffMissing" xml:space="preserve"><value>The WebP RIFF header is missing.</value></data>
   <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>This Windows environment cannot exclude the recording UI from capture.</value></data>
   <data name="WrongAnimationFormat" xml:space="preserve"><value>The file extension does not match the encoded format.</value></data>
+  <data name="Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="IncludeCursor" xml:space="preserve"><value>Include mouse cursor</value></data>
+  <data name="StartDelay" xml:space="preserve"><value>Start delay</value></data>
+  <data name="StartDelayImmediate" xml:space="preserve"><value>Immediately</value></data>
+  <data name="StartDelayThreeSeconds" xml:space="preserve"><value>3 seconds</value></data>
+  <data name="StartDelayFiveSeconds" xml:space="preserve"><value>5 seconds</value></data>
+  <data name="RecordingHotKey" xml:space="preserve"><value>Record/stop hotkey</value></data>
+  <data name="HotKeyDisabled" xml:space="preserve"><value>Off</value></data>
+  <data name="CancelWithoutSaving" xml:space="preserve"><value>Cancel without saving</value></data>
+  <data name="CancelWithoutSavingHotKey" xml:space="preserve"><value>Cancel without saving · Ctrl+Shift+F12</value></data>
+  <data name="HotKeyUnavailableFormat" xml:space="preserve"><value>The {0} shortcut is already in use. Choose another shortcut in Settings.</value></data>
+  <data name="SaveSettingsError" xml:space="preserve"><value>Could not save the settings.</value></data>
+  <data name="OpenSavedFile" xml:space="preserve"><value>Open saved file</value></data>
+  <data name="OpenSavedFileError" xml:space="preserve"><value>Could not open the saved file.</value></data>
+  <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Saved · {0:0.0} MB · Open</value></data>
+  <data name="RecordingCountdown" xml:space="preserve"><value>Recording countdown</value></data>
 </root>

@@ -14,6 +14,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private PixelRect _region = new(0, 0, 800, 450);
     private CaptureUiState _state = CaptureUiState.Selecting;
     private string _statusText = string.Empty;
+    private int _countdownSeconds;
     private TimeSpan _elapsed;
     private long _estimatedBytes;
 
@@ -105,6 +106,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
             _state = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsSelecting));
+            OnPropertyChanged(nameof(IsCountingDown));
             OnPropertyChanged(nameof(IsRecording));
             OnPropertyChanged(nameof(IsEncoding));
             OnPropertyChanged(nameof(IsCompleted));
@@ -112,9 +114,21 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     }
 
     public bool IsSelecting => State == CaptureUiState.Selecting;
+    public bool IsCountingDown => State == CaptureUiState.Countdown;
     public bool IsRecording => State == CaptureUiState.Recording;
     public bool IsEncoding => State == CaptureUiState.Encoding;
     public bool IsCompleted => State == CaptureUiState.Completed;
+
+    public int CountdownSeconds
+    {
+        get => _countdownSeconds;
+        set
+        {
+            if (SetField(ref _countdownSeconds, value)) OnPropertyChanged(nameof(CountdownText));
+        }
+    }
+
+    public string CountdownText => CountdownSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     public string StatusText
     {

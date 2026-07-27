@@ -39,6 +39,7 @@ public sealed class LocalizedToolbarLayoutTests
                     var record = Assert.IsType<Button>(toolbar.FindName("RecordButton"));
                     var fullScreen = Assert.IsType<Button>(toolbar.FindName("FullScreenButton"));
                     var exit = Assert.IsType<Button>(toolbar.FindName("ExitButton"));
+                    var settings = Assert.IsType<Button>(toolbar.FindName("SettingsButton"));
                     var frameRate = Assert.IsType<ComboBox>(toolbar.FindName("FrameRateComboBox"));
 
                     Assert.Equal(AppStrings.Record, record.ToolTip);
@@ -46,11 +47,23 @@ public sealed class LocalizedToolbarLayoutTests
                     Assert.Equal(AppStrings.FullScreen, fullScreen.Content);
                     Assert.Equal(AppStrings.Exit, exit.ToolTip);
                     Assert.Equal(AppStrings.Exit, AutomationProperties.GetName(exit));
-                    Assert.True(record.ActualWidth > 0 && frameRate.ActualWidth > 0 && exit.ActualWidth > 0, culture.Name);
+                    Assert.Equal(AppStrings.Settings, settings.ToolTip);
+                    Assert.Equal(AppStrings.Settings, AutomationProperties.GetName(settings));
+                    Assert.True(record.ActualWidth > 0 && frameRate.ActualWidth > 0 && settings.ActualWidth > 0 && exit.ActualWidth > 0, culture.Name);
 
                     var exitRight = exit.TranslatePoint(new Point(exit.ActualWidth, 0), root).X;
                     var frameRateRight = frameRate.TranslatePoint(new Point(frameRate.ActualWidth, 0), root).X;
                     Assert.InRange(Math.Abs(exitRight - frameRateRight), 0, 0.01);
+
+                    var viewModel = Assert.IsType<MainWindowViewModel>(toolbar.DataContext);
+                    viewModel.State = SimpleCapGIF.Core.Models.CaptureUiState.Completed;
+                    root.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    root.Arrange(new Rect(root.DesiredSize));
+                    root.UpdateLayout();
+                    var openResult = Assert.IsType<Button>(toolbar.FindName("OpenResultButton"));
+                    Assert.Equal(AppStrings.OpenSavedFile, openResult.ToolTip);
+                    Assert.Equal(AppStrings.OpenSavedFile, AutomationProperties.GetName(openResult));
+                    Assert.True(openResult.Visibility == Visibility.Visible && openResult.ActualWidth > 0, culture.Name);
                 }
             }
             catch (Exception exception)

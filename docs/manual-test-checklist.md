@@ -47,7 +47,8 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Returning from Completed immediately restores the correct toolbar location
 - [ ] Record and Stop contain icon-only circle/square visuals with localized tooltips and automation names
 - [ ] Location changes and immediately persists the save folder; Folder opens it
-- [ ] Completed shows Folder only; Recording and Encoding hide Location and Folder
+- [ ] Selecting shows the Settings gear; Recording, Encoding, and Completed hide it
+- [ ] Completed shows a clickable result and Folder; Recording and Encoding hide Location and Folder
 - [ ] Main window appears in the taskbar and Exit is always visible
 
 ## Recording
@@ -58,6 +59,12 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] 640×360, 800×450, 960×540, 1280×720, and Original
 - [ ] Portrait, square, and irregular region aspect ratios
 - [ ] Mouse position and shape are included
+- [ ] Cursor setting excludes the cursor when off and restores it when on, including scaled and HDR captures
+- [ ] Immediate, 3-second, and 5-second starts work; countdown is centered and excluded from output
+- [ ] F12 starts/stops while another app or a borderless full-screen game has focus
+- [ ] Alt+F9, Ctrl+Shift+R, and disabled hotkey settings persist after restart
+- [ ] A conflicting hotkey reports once, leaves toolbar controls usable, and can be changed in Settings
+- [ ] Ctrl+Shift+F12, focused Esc, and the Stop context menu cancel without creating output
 - [ ] Border and toolbar are excluded from output
 - [ ] Estimated size text and red warning at 30 MB
 - [ ] Static and dynamic estimates do not remain strongly biased in one direction
@@ -72,6 +79,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Changing the toolbar save location persists without requiring a recording
 - [ ] First frame at elapsed time zero does not overflow `TimeSpan`
 - [ ] Stop saves automatically to the current folder
+- [ ] Completed remains for five seconds; clicking it opens the exact output file and returns to Selecting
 - [ ] Same-second name collisions use `_2`, `_3`, and so on
 - [ ] GIF and WebP play in Chrome, Edge, and supported Windows viewers
 - [ ] Both formats loop forever

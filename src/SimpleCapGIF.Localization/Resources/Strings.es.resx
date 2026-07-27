@@ -17,4 +17,20 @@
   <data name="ToolbarTitle" xml:space="preserve"><value>Barra de herramientas de SimpleCapGIF</value></data><data name="UnexpectedSessionPath" xml:space="preserve"><value>La ruta de la sesión temporal está fuera de la carpeta esperada.</value></data><data name="UnsupportedFormat" xml:space="preserve"><value>Este formato de animación no es compatible.</value></data><data name="Verifying" xml:space="preserve"><value>Verificando resultado…</value></data>
   <data name="WebpAnimationMissing" xml:space="preserve"><value>Faltan los metadatos de repetición infinita de Animated WebP.</value></data><data name="WebpCanvasMissing" xml:space="preserve"><value>No se pudo leer el tamaño del lienzo WebP.</value></data><data name="WebpChunkInvalid" xml:space="preserve"><value>La longitud del bloque WebP no es válida.</value></data><data name="WebpContainerInvalid" xml:space="preserve"><value>El contenedor WebP no es válido.</value></data><data name="WebpFrameCountFormat" xml:space="preserve"><value>El número de fotogramas WebP no es válido. Capturados: {0}; salida: {1}.</value></data><data name="WebpImageMissing" xml:space="preserve"><value>Falta el flujo de bits de imagen WebP.</value></data><data name="WebpRiffMissing" xml:space="preserve"><value>Falta la cabecera RIFF de WebP.</value></data>
   <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>Este entorno de Windows no puede excluir la interfaz de grabación de la captura.</value></data><data name="WrongAnimationFormat" xml:space="preserve"><value>La extensión del archivo no coincide con el formato codificado.</value></data>
+  <data name="Settings" xml:space="preserve"><value>Configuración</value></data>
+  <data name="IncludeCursor" xml:space="preserve"><value>Incluir cursor del ratón</value></data>
+  <data name="StartDelay" xml:space="preserve"><value>Retraso de inicio</value></data>
+  <data name="StartDelayImmediate" xml:space="preserve"><value>Inmediatamente</value></data>
+  <data name="StartDelayThreeSeconds" xml:space="preserve"><value>3 segundos</value></data>
+  <data name="StartDelayFiveSeconds" xml:space="preserve"><value>5 segundos</value></data>
+  <data name="RecordingHotKey" xml:space="preserve"><value>Atajo para grabar/detener</value></data>
+  <data name="HotKeyDisabled" xml:space="preserve"><value>Desactivado</value></data>
+  <data name="CancelWithoutSaving" xml:space="preserve"><value>Cancelar sin guardar</value></data>
+  <data name="CancelWithoutSavingHotKey" xml:space="preserve"><value>Cancelar sin guardar · Ctrl+Shift+F12</value></data>
+  <data name="HotKeyUnavailableFormat" xml:space="preserve"><value>El atajo {0} ya está en uso. Elige otro en Configuración.</value></data>
+  <data name="SaveSettingsError" xml:space="preserve"><value>No se pudo guardar la configuración.</value></data>
+  <data name="OpenSavedFile" xml:space="preserve"><value>Abrir archivo guardado</value></data>
+  <data name="OpenSavedFileError" xml:space="preserve"><value>No se pudo abrir el archivo guardado.</value></data>
+  <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Guardado · {0:0.0} MB · Abrir</value></data>
+  <data name="RecordingCountdown" xml:space="preserve"><value>Cuenta atrás de grabación</value></data>
 </root>

@@ -72,4 +72,20 @@
   <data name="WebpRiffMissing" xml:space="preserve"><value>WebP RIFF ヘッダーがありません。</value></data>
   <data name="WindowCaptureExclusionFailed" xml:space="preserve"><value>この Windows 環境では録画 UI をキャプチャ対象から除外できません。</value></data>
   <data name="WrongAnimationFormat" xml:space="preserve"><value>ファイル拡張子と実際の形式が一致しません。</value></data>
+  <data name="Settings" xml:space="preserve"><value>設定</value></data>
+  <data name="IncludeCursor" xml:space="preserve"><value>マウスカーソルを含める</value></data>
+  <data name="StartDelay" xml:space="preserve"><value>開始までの時間</value></data>
+  <data name="StartDelayImmediate" xml:space="preserve"><value>すぐに開始</value></data>
+  <data name="StartDelayThreeSeconds" xml:space="preserve"><value>3 秒</value></data>
+  <data name="StartDelayFiveSeconds" xml:space="preserve"><value>5 秒</value></data>
+  <data name="RecordingHotKey" xml:space="preserve"><value>録画開始/停止のショートカット</value></data>
+  <data name="HotKeyDisabled" xml:space="preserve"><value>オフ</value></data>
+  <data name="CancelWithoutSaving" xml:space="preserve"><value>保存せずにキャンセル</value></data>
+  <data name="CancelWithoutSavingHotKey" xml:space="preserve"><value>保存せずにキャンセル · Ctrl+Shift+F12</value></data>
+  <data name="HotKeyUnavailableFormat" xml:space="preserve"><value>{0} ショートカットは既に使用されています。設定で別のショートカットを選択してください。</value></data>
+  <data name="SaveSettingsError" xml:space="preserve"><value>設定を保存できませんでした。</value></data>
+  <data name="OpenSavedFile" xml:space="preserve"><value>保存したファイルを開く</value></data>
+  <data name="OpenSavedFileError" xml:space="preserve"><value>保存したファイルを開けませんでした。</value></data>
+  <data name="SavedSizeOpenFormat" xml:space="preserve"><value>保存完了 · {0:0.0} MB · 開く</value></data>
+  <data name="RecordingCountdown" xml:space="preserve"><value>録画開始カウントダウン</value></data>
 </root>
