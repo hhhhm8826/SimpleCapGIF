@@ -9,10 +9,27 @@
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <AssemblyName>SimpleCapGIF</AssemblyName>
     <RootNamespace>SimpleCapGIF.App</RootNamespace>
+    <FfmpegBinRoot>$(MSBuildProjectDirectory)\..\..\artifacts\dependencies\ffmpeg\8.1.2-31-g8c9502e9b0\ffmpeg-n8.1.2-31-g8c9502e9b0-win64-lgpl-8.1\bin</FfmpegBinRoot>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleCapGIF.Core\SimpleCapGIF.Core.csproj" />
     <ProjectReference Include="..\SimpleCapGIF.Localization\SimpleCapGIF.Localization.csproj" />
     <ProjectReference Include="..\SimpleCapGIF.Windows\SimpleCapGIF.Windows.csproj" />
   </ItemGroup>
+
+  <Target Name="PrepareFfmpeg" BeforeTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Message Text="Preparing and verifying FFmpeg..." Importance="high" />
+    <Exec Command="powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\scripts\fetch-ffmpeg.ps1&quot;" />
+    <Exec Command="powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\scripts\verify-ffmpeg.ps1&quot; -BinRoot &quot;$(FfmpegBinRoot)&quot;" />
+  </Target>
+
+  <Target Name="CopyFfmpegToOutput" AfterTargets="Build" DependsOnTargets="PrepareFfmpeg" Condition="'$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <FfmpegRuntimeFile Include="$(FfmpegBinRoot)\ffmpeg.exe" />
+      <FfmpegRuntimeFile Include="$(FfmpegBinRoot)\ffprobe.exe" />
+      <FfmpegRuntimeFile Include="$(FfmpegBinRoot)\..\LICENSE.txt" />
+    </ItemGroup>
+    <MakeDir Directories="$(TargetDir)ffmpeg" />
+    <Copy SourceFiles="@(FfmpegRuntimeFile)" DestinationFolder="$(TargetDir)ffmpeg" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

@@ -14,11 +14,11 @@ public sealed record RecordingPreferences
 
     public bool IncludeCursor { get; init; } = true;
     public int StartDelaySeconds { get; init; }
-    public GlobalHotKeyPreset GlobalHotKey { get; init; } = GlobalHotKeyPreset.F12;
+    public GlobalHotKeyPreset GlobalHotKey { get; init; } = GlobalHotKeyPreset.AltF9;
 
     public RecordingPreferences Validate() => this with
     {
         StartDelaySeconds = StartDelaySeconds is 0 or 3 or 5 ? StartDelaySeconds : 0,
-        GlobalHotKey = Enum.IsDefined(GlobalHotKey) ? GlobalHotKey : GlobalHotKeyPreset.F12,
+        GlobalHotKey = Enum.IsDefined(GlobalHotKey) ? GlobalHotKey : GlobalHotKeyPreset.AltF9,
     };
 }

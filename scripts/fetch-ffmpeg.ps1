@@ -2,6 +2,23 @@
 param([switch]$Force)
 
 $ErrorActionPreference = 'Stop'
+
+function Get-Sha256([string]$Path) {
+    $stream = [System.IO.File]::OpenRead($Path)
+    try {
+        $sha256 = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            return [System.BitConverter]::ToString($sha256.ComputeHash($stream)).Replace('-', '').ToLowerInvariant()
+        }
+        finally {
+            $sha256.Dispose()
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+}
+
 $version = '8.1.2-31-g8c9502e9b0'
 $archiveName = 'ffmpeg-n8.1.2-31-g8c9502e9b0-win64-lgpl-8.1.zip'
 $url = 'https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-07-26-13-28/' + $archiveName
@@ -17,7 +34,7 @@ if ($Force -or -not (Test-Path -LiteralPath $archivePath)) {
     Invoke-WebRequest -Uri $url -OutFile $archivePath -UseBasicParsing
 }
 
-$actualHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+$actualHash = Get-Sha256 $archivePath
 if ($actualHash -ne $expectedHash) {
     throw "FFmpeg archive SHA-256 mismatch. Expected $expectedHash, got $actualHash."
 }

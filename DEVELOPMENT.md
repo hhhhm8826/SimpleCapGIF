@@ -13,12 +13,12 @@ This document is the entry point for building, testing, packaging, and contribut
 
 ```powershell
 ./scripts/verify-text-format.ps1
-./scripts/fetch-ffmpeg.ps1
-./scripts/verify-ffmpeg.ps1
 dotnet restore SimpleCapGIF.sln
 dotnet build SimpleCapGIF.sln -c Release --no-restore
 dotnet test SimpleCapGIF.sln -c Release --no-build
 ```
+
+The app build automatically downloads the pinned FFmpeg dependency when it is missing, verifies its checksums and required codecs, and copies the runtime files into the app output's `ffmpeg` directory.
 
 The integration suite uses the pinned FFmpeg binaries and includes synthetic GIF/WebP encoding, failure cleanup, and a 60-second capture-lifetime test.
 

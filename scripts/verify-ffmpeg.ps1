@@ -2,6 +2,23 @@
 param([string]$BinRoot)
 
 $ErrorActionPreference = 'Stop'
+
+function Get-Sha256([string]$Path) {
+    $stream = [System.IO.File]::OpenRead($Path)
+    try {
+        $sha256 = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            return [System.BitConverter]::ToString($sha256.ComputeHash($stream)).Replace('-', '').ToLowerInvariant()
+        }
+        finally {
+            $sha256.Dispose()
+        }
+    }
+    finally {
+        $stream.Dispose()
+    }
+}
+
 if ([string]::IsNullOrWhiteSpace($BinRoot)) {
     $BinRoot = & (Join-Path $PSScriptRoot 'fetch-ffmpeg.ps1')
 }
@@ -13,7 +30,7 @@ $expectedFfprobe = 'ac9bf61f6f6f642e7f655e86ff60c7fe5670eebd16c18de3a9bbf81af03c
 
 foreach ($item in @(@($ffmpeg, $expectedFfmpeg), @($ffprobe, $expectedFfprobe))) {
     if (-not (Test-Path -LiteralPath $item[0])) { throw "Missing FFmpeg component: $($item[0])" }
-    $hash = (Get-FileHash -LiteralPath $item[0] -Algorithm SHA256).Hash.ToLowerInvariant()
+    $hash = Get-Sha256 $item[0]
     if ($hash -ne $item[1]) { throw "Checksum mismatch for $($item[0])" }
 }
 

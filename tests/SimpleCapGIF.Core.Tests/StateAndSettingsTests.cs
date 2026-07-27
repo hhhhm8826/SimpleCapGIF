@@ -155,11 +155,17 @@ public sealed class StateAndSettingsTests
     }
 
     [Fact]
+    public void RecordingPreferencesDefaultToAltF9()
+    {
+        Assert.Equal(GlobalHotKeyPreset.AltF9, RecordingPreferences.Default.GlobalHotKey);
+    }
+
+    [Fact]
     public void RecordingPreferencesNormalizeUnknownHotKey()
     {
         var preferences = RecordingPreferences.Default with { GlobalHotKey = (GlobalHotKeyPreset)999 };
 
-        Assert.Equal(GlobalHotKeyPreset.F12, preferences.Validate().GlobalHotKey);
+        Assert.Equal(GlobalHotKeyPreset.AltF9, preferences.Validate().GlobalHotKey);
     }
 
     [Fact]
