@@ -1,0 +1,49 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  portable:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify text encoding and line endings
+        shell: pwsh
+        run: ./scripts/verify-text-format.ps1
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Package portable build
+        shell: pwsh
+        run: |
+          [xml]$buildProps = Get-Content -LiteralPath ./Directory.Build.props -Raw
+          $version = [string]$buildProps.Project.PropertyGroup.Version
+          $expectedTag = "v$version"
+          if ($env:GITHUB_REF_NAME -ne $expectedTag) {
+            throw "Tag $env:GITHUB_REF_NAME does not match project version $expectedTag."
+          }
+
+          $packagePath = ./scripts/package.ps1 | Select-Object -Last 1
+          "PACKAGE_PATH=$packagePath" >> $env:GITHUB_ENV
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleCapGIF-portable-${{ github.ref_name }}-win-x64
+          path: ${{ env.PACKAGE_PATH }}
+      - name: Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create $env:GITHUB_REF_NAME $env:PACKAGE_PATH `
+            --title "SimpleCapGIF $env:GITHUB_REF_NAME" `
+            --generate-notes `
+            --latest `
+            --verify-tag
