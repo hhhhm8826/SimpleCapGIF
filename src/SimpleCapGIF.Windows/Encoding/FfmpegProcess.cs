@@ -50,19 +50,36 @@ internal static class FfmpegProcess
     internal static async Task TerminateAsync(Process process)
     {
         if (process.HasExited) return;
+
+        if (process.StartInfo.RedirectStandardInput)
+        {
+            try
+            {
+                process.StandardInput.Close();
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                await process.WaitForExitAsync(timeout.Token).ConfigureAwait(false);
+                return;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (InvalidOperationException) when (process.HasExited)
+            {
+                return;
+            }
+        }
+
         try
         {
-            process.StandardInput.Close();
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-            await process.WaitForExitAsync(timeout.Token).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
             if (!process.HasExited) process.Kill(entireProcessTree: true);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException) when (process.HasExited)
         {
-            if (!process.HasExited) process.Kill(entireProcessTree: true);
+        }
+
+        if (!process.HasExited)
+        {
+            await process.WaitForExitAsync(CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

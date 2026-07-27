@@ -15,12 +15,16 @@ This document is the entry point for building, testing, packaging, and contribut
 ./scripts/verify-text-format.ps1
 dotnet restore SimpleCapGIF.sln
 dotnet build SimpleCapGIF.sln -c Release --no-restore
-dotnet test SimpleCapGIF.sln -c Release --no-build
+dotnet test SimpleCapGIF.sln -c Release --no-build --filter "Category!=Soak"
 ```
 
 The app build automatically downloads the pinned FFmpeg dependency when it is missing, verifies its checksums and required codecs, and copies the runtime files into the app output's `ffmpeg` directory.
 
-The integration suite uses the pinned FFmpeg binaries and includes synthetic GIF/WebP encoding, failure cleanup, and a 60-second capture-lifetime test.
+The integration suite uses the pinned FFmpeg binaries and includes synthetic GIF/WebP encoding and failure cleanup. The 60-second capture-lifetime soak test runs in the weekly `soak` workflow or manually with:
+
+```powershell
+dotnet test tests/SimpleCapGIF.IntegrationTests/SimpleCapGIF.IntegrationTests.csproj -c Release --filter "Category=Soak"
+```
 
 ## Package
 
@@ -28,7 +32,7 @@ The integration suite uses the pinned FFmpeg binaries and includes synthetic GIF
 ./scripts/package.ps1
 ```
 
-The result is `artifacts/package/SimpleCapGIF-v0.1.0-win-x64.zip`. The portable package contains the self-contained app, pinned FFmpeg binaries, nine language resources, English and Korean user READMEs and their image assets, licenses, and third-party notices. Developer documentation is repository-only.
+The result is `artifacts/package/SimpleCapGIF-v0.1.1-win-x64.zip`. The portable package contains the self-contained app, pinned FFmpeg binaries, nine language resources, English and Korean user READMEs and their image assets, licenses, and third-party notices. Developer documentation is repository-only.
 
 ## Repository map
 

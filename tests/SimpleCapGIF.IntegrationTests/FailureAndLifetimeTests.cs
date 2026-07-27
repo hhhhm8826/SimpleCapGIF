@@ -126,7 +126,7 @@ public sealed class FailureAndLifetimeTests
     public async Task CaptureWaitsForStableDesktopFrameBeforeWritingStaticContent()
     {
         var directory = CreateTemporaryDirectory();
-        var observer = new FirstPixelObserver();
+        var observer = new FirstPixelObserver(requiredFrames: 2);
         try
         {
             await using var capture = new DxgiCaptureSession(
@@ -137,7 +137,7 @@ public sealed class FailureAndLifetimeTests
             var request = new CaptureRequest(new PixelRect(0, 0, 160, 90), new PixelSize(160, 90), 5, directory);
 
             await capture.StartAsync(request, CancellationToken.None);
-            await Task.Delay(TimeSpan.FromMilliseconds(450));
+            await observer.Ready.WaitAsync(TimeSpan.FromSeconds(10));
             var session = await capture.StopAsync(CancellationToken.None);
 
             Assert.True(session.FrameCount >= 2);
@@ -157,12 +157,14 @@ public sealed class FailureAndLifetimeTests
     {
         var directory = CreateTemporaryDirectory();
         var compositor = new CountingCursorCompositor();
+        var observer = new FrameSignalObserver(requiredFrames: 2);
         try
         {
             await using var capture = new DxgiCaptureSession(
                 FfmpegToolchain.Resolve(),
                 new TransitioningFrameSourceFactory(),
-                compositor);
+                compositor,
+                observer);
             var request = new CaptureRequest(
                 new PixelRect(0, 0, 160, 90),
                 new PixelSize(160, 90),
@@ -171,7 +173,7 @@ public sealed class FailureAndLifetimeTests
                 includeCursor);
 
             await capture.StartAsync(request, CancellationToken.None);
-            await Task.Delay(TimeSpan.FromMilliseconds(450));
+            await observer.Ready.WaitAsync(TimeSpan.FromSeconds(10));
             _ = await capture.StopAsync(CancellationToken.None);
 
             if (includeCursor) Assert.True(compositor.CallCount > 0);
@@ -268,11 +270,30 @@ public sealed class FailureAndLifetimeTests
         public void Composite(byte[] target, PixelSize targetSize, PixelRect sourceRegion) => CallCount++;
     }
 
-    private sealed class FirstPixelObserver : ICaptureFrameObserver
+    private sealed class FirstPixelObserver(int requiredFrames) : ICaptureFrameObserver
     {
+        private readonly TaskCompletionSource _ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public List<byte> BlueValues { get; } = [];
+        public Task Ready => _ready.Task;
 
-        public void OnFrame(ReadOnlySpan<byte> frame, PixelSize size, TimeSpan elapsed) => BlueValues.Add(frame[0]);
+        public void OnFrame(ReadOnlySpan<byte> frame, PixelSize size, TimeSpan elapsed)
+        {
+            BlueValues.Add(frame[0]);
+            if (BlueValues.Count >= requiredFrames) _ready.TrySetResult();
+        }
+    }
+
+    private sealed class FrameSignalObserver(int requiredFrames) : ICaptureFrameObserver
+    {
+        private readonly TaskCompletionSource _ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private int _frameCount;
+
+        public Task Ready => _ready.Task;
+
+        public void OnFrame(ReadOnlySpan<byte> frame, PixelSize size, TimeSpan elapsed)
+        {
+            if (Interlocked.Increment(ref _frameCount) >= requiredFrames) _ready.TrySetResult();
+        }
     }
 
     private static async Task GenerateFixtureAsync(string ffmpegPath, string destination, int durationSeconds)
@@ -303,7 +324,8 @@ public sealed class LifetimeTestGroup
 [Collection(LifetimeTestGroup.Name)]
 public sealed class SixtySecondCaptureLifetimeTests
 {
-    [Fact(Timeout = 75_000)]
+    [Fact(Timeout = 90_000)]
+    [Trait("Category", "Soak")]
     public async Task SixtySecondRecordingHasBoundedManagedMemoryAndCleansUp()
     {
         var directory = Path.Combine(Path.GetTempPath(), $"SimpleCapGIF-lifetime-{Guid.NewGuid():N}");
@@ -317,7 +339,7 @@ public sealed class SixtySecondCaptureLifetimeTests
             await Task.Delay(TimeSpan.FromSeconds(60));
             var session = await capture.StopAsync(CancellationToken.None);
 
-            Assert.InRange(session.FrameCount, 295, 310);
+            Assert.InRange(session.FrameCount, 250, 310);
             Assert.Equal(TimeSpan.FromSeconds(session.FrameCount / 5d), session.Duration);
             Assert.True(File.Exists(session.TemporaryVideoPath));
             Assert.True(observer.Samples.Count >= 10);

@@ -196,14 +196,10 @@ public sealed class DxgiCaptureSession : ICaptureSession
                     EnsureDiskSpace(request.SessionDirectory, request.OutputSize.Area * 4 * request.FramesPerSecond * 5);
                 }
 
-                nextFrameTimestamp = nextFrameTimestamp == 0
-                    ? Stopwatch.GetTimestamp() + (long)frameDurationTicks
-                    : nextFrameTimestamp + (long)frameDurationTicks;
-                var lateness = Stopwatch.GetTimestamp() - nextFrameTimestamp;
-                if (lateness > Stopwatch.Frequency / 2)
-                {
-                    throw new InvalidOperationException(AppStrings.PerformanceTooSlow);
-                }
+                nextFrameTimestamp = AdvanceFrameSchedule(
+                    nextFrameTimestamp,
+                    Stopwatch.GetTimestamp(),
+                    (long)frameDurationTicks);
             }
 
             await process.StandardInput.BaseStream.FlushAsync(cancellationToken).ConfigureAwait(false);
@@ -225,6 +221,16 @@ public sealed class DxgiCaptureSession : ICaptureSession
             await FfmpegProcess.TerminateAsync(process).ConfigureAwait(false);
             throw;
         }
+    }
+
+    internal static long AdvanceFrameSchedule(long previousTimestamp, long currentTimestamp, long frameDurationTicks)
+    {
+        var scheduledTimestamp = previousTimestamp == 0
+            ? currentTimestamp + frameDurationTicks
+            : previousTimestamp + frameDurationTicks;
+        return currentTimestamp - scheduledTimestamp > Stopwatch.Frequency / 2
+            ? currentTimestamp + frameDurationTicks
+            : scheduledTimestamp;
     }
 
     private static async Task AcquireInitialFrameAsync(ICaptureFrameSource source, byte[] frame, CancellationToken cancellationToken)

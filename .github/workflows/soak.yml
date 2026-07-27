@@ -1,0 +1,21 @@
+name: soak
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+jobs:
+  capture-lifetime:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify text encoding and line endings
+        shell: pwsh
+        run: ./scripts/verify-text-format.ps1
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Run capture lifetime soak test
+        run: dotnet test tests/SimpleCapGIF.IntegrationTests/SimpleCapGIF.IntegrationTests.csproj -c Release --filter "Category=Soak"

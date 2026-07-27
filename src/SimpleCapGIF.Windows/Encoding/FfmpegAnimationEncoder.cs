@@ -16,7 +16,7 @@ public sealed class FfmpegAnimationEncoder(FfmpegToolchain toolchain, AnimationF
         Directory.CreateDirectory(directory);
         var extension = Path.GetExtension(destinationPath);
         var partialPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(destinationPath) + ".partial" + extension);
-        File.Delete(partialPath);
+        await DeleteFileWithRetryAsync(partialPath).ConfigureAwait(false);
         progress?.Report(new EncodeProgress(0, AppStrings.Saving));
 
         try
@@ -47,8 +47,29 @@ public sealed class FfmpegAnimationEncoder(FfmpegToolchain toolchain, AnimationF
         }
         catch
         {
-            File.Delete(partialPath);
+            await DeleteFileWithRetryAsync(partialPath).ConfigureAwait(false);
             throw;
+        }
+    }
+
+    private static async Task DeleteFileWithRetryAsync(string path)
+    {
+        const int maximumAttempts = 5;
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                File.Delete(path);
+                return;
+            }
+            catch (IOException) when (attempt < maximumAttempts)
+            {
+            }
+            catch (UnauthorizedAccessException) when (attempt < maximumAttempts)
+            {
+            }
+
+            await Task.Delay(TimeSpan.FromMilliseconds(50 * attempt), CancellationToken.None).ConfigureAwait(false);
         }
     }
 
