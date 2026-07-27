@@ -24,15 +24,13 @@ SimpleCapGIF is a minimal region recorder for GIF and Animated WebP on Windows 1
 
 ## Controls
 
-- **Full screen** captures the active monitor. Returning restores the previous region and preset.
-- **Location** changes the save folder. **Folder** opens the current save folder.
-- Choosing a resolution preset resizes the region to that exact physical-pixel size. Manual resizing switches the preset to **Original**; moving the region keeps the preset.
-- The default is GIF at `800×450 · 10 FPS`. WebP defaults to 15 FPS unless you selected an FPS manually.
-- **F12** starts recording and pressing it again stops and saves. **Ctrl+Shift+F12** cancels without saving; the recording hotkey can be changed or disabled in Settings.
-- Use the gear menu to include or hide the mouse cursor and choose an immediate, 3-second, or 5-second start delay.
-- Click the completion message within five seconds to open the saved file. To discard a recording, right-click Stop or press **Esc** while SimpleCapGIF has focus.
-- The estimated output size turns red at 30 MB. SimpleCapGIF warns instead of silently lowering quality.
-- Use the toolbar **×** or the taskbar close command to exit. Active FFmpeg work and temporary files are cleaned up first.
+- **Capture area:** Drag inside the black border to move it and use the eight handles to resize it. **Full screen** captures the active monitor; returning restores the previous selection.
+- **Output:** Choose GIF/WebP, output size, and FPS. The default is GIF at `800×450 · 10 FPS`; WebP uses 15 FPS unless you selected an FPS manually.
+- **Resolution presets:** Resize the selected area to the exact physical-pixel size shown. Manual resizing switches to **Original**; moving the area keeps the preset.
+- **Record and save:** Use the circular button or **F12** to start. Use the square button or press **F12** again to stop and save automatically.
+- **Cancel without saving:** Press **Ctrl+Shift+F12**, right-click Stop, or press **Esc** while SimpleCapGIF has focus.
+- **Recording settings:** Use the gear menu to include or hide the cursor, choose an immediate, 3-second, or 5-second delay, and change or disable the global hotkey.
+- **Files:** **Location** changes the save folder and **Folder** opens it. Click the completion message within five seconds to open the saved file.
 
 ## Languages
 
