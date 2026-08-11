@@ -21,7 +21,7 @@ function Get-Sha256([string]$Path) {
 
 $version = '8.1.2-31-g8c9502e9b0'
 $archiveName = 'ffmpeg-n8.1.2-31-g8c9502e9b0-win64-lgpl-8.1.zip'
-$url = 'https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-07-26-13-28/' + $archiveName
+$url = 'https://github.com/hhhhm8826/SimpleCapGIF/releases/download/ffmpeg-n8.1.2-31-g8c9502e9b0-20260726/' + $archiveName
 $expectedHash = '923522df4e21c84cf6bd533ad690ea9b134087b38a95535a35abd786c25445c9'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $cacheRoot = Join-Path $repoRoot 'artifacts\dependencies\ffmpeg'
