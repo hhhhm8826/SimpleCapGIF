@@ -8,6 +8,8 @@ internal static partial class NativeMethods
     internal const uint MonitorDefaultToNull = 0;
     internal const uint WdaExcludeFromCapture = 0x00000011;
     internal const uint SwpNoActivate = 0x0010;
+    internal const int GwlExStyle = -20;
+    internal const long WsExTransparent = 0x00000020L;
     internal const int MdtEffectiveDpi = 0;
     internal const uint CursorShowing = 0x00000001;
 
@@ -32,6 +34,12 @@ internal static partial class NativeMethods
     [LibraryImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool SetWindowPos(nint window, nint insertAfter, int x, int y, int width, int height, uint flags);
+
+    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
+    internal static partial nint GetWindowLongPtr(nint window, int index);
+
+    [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+    internal static partial nint SetWindowLongPtr(nint window, int index, nint newValue);
 
     #pragma warning disable SYSLIB1054
     [DllImport("user32.dll", EntryPoint = "GetMonitorInfoW", CharSet = CharSet.Unicode, SetLastError = true)]

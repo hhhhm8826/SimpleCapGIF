@@ -42,6 +42,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Presets produce exact physical-pixel dimensions and preserve center
 - [ ] Oversized presets are rejected and the previous region/dropdown are restored
 - [ ] Full screen shows Original; returning restores the previous region and preset
+- [ ] Full-screen selection passes mouse input through the visible border to the captured app
 - [ ] Toolbar remains on-screen at monitor edges, corners, and full screen
 - [ ] Record and Stop retain identical physical coordinates through Selecting→Recording
 - [ ] Selecting row 1 is Record, Full screen, Location, Folder, Exit; row 2 is Format, Output size, FPS
@@ -62,6 +63,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Mouse position and shape are included
 - [ ] Cursor setting excludes the cursor when off and restores it when on, including scaled and HDR captures
 - [ ] Immediate, 3-second, and 5-second starts work; countdown is centered and excluded from output
+- [ ] Countdown and recording pass mouse input through the visible border for both partial and full-screen capture
 - [ ] F12 starts/stops while another app or a borderless full-screen game has focus
 - [ ] Alt+F9, Ctrl+Shift+R, and disabled hotkey settings persist after restart
 - [ ] A conflicting hotkey reports once, leaves toolbar controls usable, and can be changed in Settings

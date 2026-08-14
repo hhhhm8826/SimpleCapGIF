@@ -35,7 +35,7 @@
   <data name="GifTruncated" xml:space="preserve"><value>The GIF data is truncated.</value></data>
   <data name="GifVerificationFailedFormat" xml:space="preserve"><value>GIF verification failed. {0}</value></data>
   <data name="GpuScalingUnavailable" xml:space="preserve"><value>GPU region scaling is not available on this graphics device.</value></data>
-  <data name="HdrWarning" xml:space="preserve"><value>HDR is enabled on this monitor. SimpleCapGIF v0.1.2 does not support HDR tone mapping, so colors or brightness may differ from the screen.</value></data>
+  <data name="HdrWarning" xml:space="preserve"><value>HDR is enabled on this monitor. SimpleCapGIF does not support HDR tone mapping, so colors or brightness may differ from the screen.</value></data>
   <data name="HdrWarningTitle" xml:space="preserve"><value>SimpleCapGIF · HDR not supported</value></data>
   <data name="InvalidSettingsFolder" xml:space="preserve"><value>The settings folder is invalid.</value></data>
   <data name="InvalidStateReturnFormat" xml:space="preserve"><value>Cannot return to selection from the {0} state.</value></data>

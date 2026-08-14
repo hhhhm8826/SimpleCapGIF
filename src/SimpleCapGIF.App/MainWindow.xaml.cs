@@ -779,6 +779,7 @@ public partial class MainWindow : Window
 
     private void UpdateVisualLayout()
     {
+        UpdateOverlayInputMode();
         if (_monitor is null || !IsLoaded) return;
         var localX = (_viewModel.Region.X - _monitor.Bounds.X) / _monitor.ScaleX;
         var localY = (_viewModel.Region.Y - _monitor.Bounds.Y) / _monitor.ScaleY;
@@ -832,6 +833,18 @@ public partial class MainWindow : Window
             new WindowInteropHelper(_toolbarWindow).Handle,
             new PixelRect(toolbarPoint.X, toolbarPoint.Y, toolbarPixels.Width, toolbarPixels.Height));
     }
+
+    private void UpdateOverlayInputMode()
+    {
+        var windowHandle = new WindowInteropHelper(this).Handle;
+        if (windowHandle == 0) return;
+        OverlayWindowService.SetClickThrough(
+            windowHandle,
+            ShouldOverlayPassThroughInput(_viewModel.State, _isFullScreen));
+    }
+
+    internal static bool ShouldOverlayPassThroughInput(CaptureUiState state, bool isFullScreen) =>
+        isFullScreen || state != CaptureUiState.Selecting;
 
     private static void PositionHandle(FrameworkElement handle, double centerX, double centerY, Visibility visibility)
     {
