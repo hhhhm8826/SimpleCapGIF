@@ -36,6 +36,7 @@ public sealed class FfmpegToolchain
         var candidates = new[]
         {
             Environment.GetEnvironmentVariable("SIMPLECAPGIF_FFMPEG_ROOT"),
+            Path.Combine(AppContext.BaseDirectory, "resources", "ffmpeg"),
             FindDevelopmentToolchainRoot(),
             Path.Combine(AppContext.BaseDirectory, "ffmpeg"),
             AppContext.BaseDirectory,

@@ -32,7 +32,7 @@ dotnet test tests/SimpleCapGIF.IntegrationTests/SimpleCapGIF.IntegrationTests.cs
 ./scripts/package.ps1
 ```
 
-The result is `artifacts/package/SimpleCapGIF-v0.1.2-win-x64.zip`. The portable package contains the self-contained app, pinned FFmpeg binaries, nine language resources, English and Korean user READMEs and their image assets, licenses, and third-party notices. Developer documentation is repository-only.
+The result is `artifacts/package/SimpleCapGIF-v0.1.2-win-x64.zip`. Its root contains only the self-contained single-file `SimpleCapGIF.exe` and a `resources` directory. Pinned FFmpeg binaries are under `resources/ffmpeg`; English and Korean user READMEs, image assets, licenses, and third-party notices are under `resources/docs`. Developer documentation is repository-only.
 
 ## Repository map
 
@@ -77,4 +77,4 @@ The renderer loads `ToolbarWindow.xaml` and its localized bindings directly, so 
 
 ## Release verification
 
-Run the full automated suite, complete every applicable item in the manual checklist, build the portable ZIP from a clean output folder, inspect its language satellite assemblies and document allowlist, then launch `SimpleCapGIF.exe` from the packaged directory. Record the ZIP SHA-256 with the release.
+Run the full automated suite, complete every applicable item in the manual checklist, build the portable ZIP from a clean output folder, verify every supported language in the packaged single-file app and inspect the document allowlist, then launch `SimpleCapGIF.exe` from the packaged directory. Record the ZIP SHA-256 with the release.

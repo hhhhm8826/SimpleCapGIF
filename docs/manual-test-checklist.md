@@ -37,6 +37,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Dragging anywhere inside the transparent region moves it
 - [ ] Eight handles resize all edges and corners
 - [ ] Manual resize changes the preset to Original; moving alone preserves it
+- [ ] The selection label shows only the final image dimensions once, without a source-to-output arrow
 - [ ] Minimum region is 160×90 physical pixels
 - [ ] Presets produce exact physical-pixel dimensions and preserve center
 - [ ] Oversized presets are rejected and the previous region/dropdown are restored
@@ -95,7 +96,8 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 
 ## Package
 
-- [ ] ZIP contains `SimpleCapGIF.exe`, FFmpeg, all eight localized satellite resource folders, `README.md`, `README.ko-KR.md`, `LICENSE`, and `THIRD_PARTY_NOTICES.md`
-- [ ] ZIP excludes `DEVELOPMENT.md` and the `docs` directory
+- [ ] ZIP root contains only `SimpleCapGIF.exe` and the `resources` directory
+- [ ] `resources/ffmpeg` contains FFmpeg and its license; `resources/docs` contains `README.md`, `README.ko-KR.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, and README images
+- [ ] ZIP excludes `DEVELOPMENT.md` and repository developer documents
 - [ ] No legacy LoopCap names remain
 - [ ] Packaged executable starts, records, saves, and exits from the extracted directory

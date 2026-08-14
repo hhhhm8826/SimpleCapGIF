@@ -38,7 +38,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     }
 
     public PixelSize OutputSize => _outputSizeCalculator.Calculate(Region.Size, _settings.OutputPreset);
-    public string RegionLabel => $"{Region.Width}×{Region.Height} → {OutputSize.Width}×{OutputSize.Height}";
+    public string RegionLabel => $"{OutputSize.Width}×{OutputSize.Height}";
 
     public AnimationFormat SelectedFormat
     {
