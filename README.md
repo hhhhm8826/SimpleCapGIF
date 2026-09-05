@@ -25,10 +25,10 @@ SimpleCapGIF is a minimal region recorder for GIF and Animated WebP on Windows 1
 ## Controls
 
 - **Capture area:** Drag inside the black border to move it and use the eight handles to resize it. **Full screen** captures the active monitor; returning restores the previous selection. In full-screen mode and while recording, the border passes mouse input through so you can control the captured app beneath it.
-- **Output:** Choose GIF/WebP, output size, and FPS. The default is GIF at `800×450 · 10 FPS`; WebP uses 15 FPS unless you selected an FPS manually.
+- **Output:** Choose GIF/WebP, output size, and FPS.
 - **Resolution presets:** Resize the selected area to the exact physical-pixel size shown. Manual resizing switches to **Original**; moving the area keeps the preset.
 - **Record and save:** Use the circular button or the configured global hotkey (**Alt+F9** by default) to start. Use the square button or press the same hotkey again to stop and save automatically.
-- **Capture performance:** If sustained capture throughput falls below 90% of the selected FPS, the toolbar shows actual/target FPS. The saved animation keeps the real recording duration; only severe throughput below 50% for 10 seconds or two consecutive 500 ms encoder stalls stops recording.
+- **Capture performance:** If capture throughput remains below 90% of the selected FPS, the toolbar shows actual/target FPS. The saved animation keeps the real recording duration, and recording may stop if throughput becomes excessively slow.
 - **Cancel without saving:** Press **Ctrl+Shift+F12**, right-click Stop, or press **Esc** while SimpleCapGIF has focus.
 - **Recording settings:** Use the gear menu to include or hide the cursor, choose an immediate, 3-second, or 5-second delay, and change or disable the global hotkey.
 - **Files:** **Location** changes the save folder and **Folder** opens it. Click the completion message within five seconds to open the saved file.
@@ -42,14 +42,13 @@ The app follows the Windows UI language when it starts. It supports English, Kor
 - Settings: `%LocalAppData%\SimpleCapGIF\settings.json`
 - Temporary recording data: `%LocalAppData%\SimpleCapGIF\Temp\{session-id}`
 - The initial folder picker opens at `%USERPROFILE%\Pictures\SimpleCapGIF` when no saved location exists.
-- SimpleCapGIF makes no network requests and has no account, telemetry, upload, or automatic-update feature.
 - Screen pixels and user-file contents are not written to logs.
 
 ## Limitations
 
 - A capture region must fit entirely within one monitor.
 - Audio, webcam capture, window tracking, editing, and MP4 export are not included.
-- You can record a display with HDR turned on. SimpleCapGIF automatically adjusts very bright areas for GIF and WebP so they are less likely to look washed out or lose detail. The saved file is standard SDR, not HDR.
+- You can record a display with HDR turned on. SimpleCapGIF automatically adjusts very bright areas for GIF and WebP so they are less likely to look washed out or lose detail. The saved file is SDR.
 - DRM-protected content may appear black.
 
 ## License and development
