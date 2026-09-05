@@ -3,7 +3,13 @@ using SimpleCapGIF.Core.Geometry;
 namespace SimpleCapGIF.Core.Models;
 
 public sealed record CaptureRequest(PixelRect Region, PixelSize OutputSize, int FramesPerSecond, string SessionDirectory, bool IncludeCursor = true);
-public sealed record CaptureStatistics(TimeSpan Elapsed, long FramesWritten, long BytesWritten, TimeSpan EncoderBacklog);
+public sealed record CaptureStatistics(
+    TimeSpan Elapsed,
+    long FramesWritten,
+    long BytesWritten,
+    TimeSpan EncoderBacklog,
+    double ActualFramesPerSecond,
+    bool IsPerformanceDegraded);
 public sealed record RecordedSession(string TemporaryVideoPath, PixelSize FrameSize, int FramesPerSecond, TimeSpan Duration, long FrameCount);
 public sealed record EncodeResult(string Path, long Bytes, TimeSpan Duration, long FrameCount);
 public readonly record struct EncodeProgress(double Fraction, string Message);

@@ -33,4 +33,5 @@
   <data name="OpenSavedFileError" xml:space="preserve"><value>無法開啟已儲存的檔案。</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>已儲存 · {0:0.0} MB · 開啟</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>錄製開始倒數</value></data>
+  <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>效能下降 · {0:0.0}/{1} FPS</value></data>
 </root>

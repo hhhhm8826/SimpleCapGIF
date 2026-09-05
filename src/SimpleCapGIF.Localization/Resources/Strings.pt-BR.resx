@@ -33,4 +33,5 @@
   <data name="OpenSavedFileError" xml:space="preserve"><value>Não foi possível abrir o arquivo salvo.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Salvo · {0:0.0} MB · Abrir</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Contagem regressiva da gravação</value></data>
+  <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Desempenho baixo · {0:0.0}/{1} FPS</value></data>
 </root>

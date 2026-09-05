@@ -53,6 +53,34 @@ public sealed class SyntheticEncodingTests
         }
     }
 
+    [Theory]
+    [InlineData(AnimationFormat.Gif)]
+    [InlineData(AnimationFormat.WebP)]
+    public async Task EncoderPreservesWallClockDurationWhenCaptureMissesRequestedFps(AnimationFormat format)
+    {
+        var toolchain = FfmpegToolchain.Resolve();
+        await toolchain.VerifyAsync();
+        var directory = Path.Combine(Path.GetTempPath(), $"SimpleCapGIF-slow-capture-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directory);
+        try
+        {
+            var temporaryVideo = Path.Combine(directory, "capture.mkv");
+            var output = Path.Combine(directory, format == AnimationFormat.Gif ? "result.gif" : "result.webp");
+            await GenerateFixedFrameFixtureAsync(toolchain.FfmpegPath, 30, 40, temporaryVideo);
+            var session = new RecordedSession(temporaryVideo, new PixelSize(160, 90), 30, TimeSpan.FromSeconds(2), 40);
+
+            var result = await new FfmpegAnimationEncoder(toolchain, format).EncodeAsync(session, output, null, CancellationToken.None);
+
+            Assert.Equal(TimeSpan.FromSeconds(2), result.Duration);
+            Assert.Equal(40, result.FrameCount);
+            Assert.True(File.Exists(output));
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
     private static async Task RunFixtureAsync(string fixtureName, string sourceFilter, AnimationFormat format, int framesPerSecond)
     {
         var toolchain = FfmpegToolchain.Resolve();
@@ -123,6 +151,33 @@ public sealed class SyntheticEncodingTests
         ];
         foreach (var argument in arguments) startInfo.ArgumentList.Add(argument);
         using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("정지 WebP FFmpeg를 시작하지 못했습니다.");
+        var outputTask = process.StandardOutput.ReadToEndAsync();
+        var errorTask = process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+        _ = await outputTask;
+        var error = await errorTask;
+        Assert.True(process.ExitCode == 0, error);
+        Assert.True(File.Exists(destination));
+    }
+
+    private static async Task GenerateFixedFrameFixtureAsync(string ffmpegPath, int framesPerSecond, int frameCount, string destination)
+    {
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = ffmpegPath,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+        };
+        string[] arguments =
+        [
+            "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", $"testsrc2=s=160x90:r={framesPerSecond}",
+            "-frames:v", frameCount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "-pix_fmt", "bgra", "-c:v", "ffv1", "-level", "3", "-y", destination,
+        ];
+        foreach (var argument in arguments) startInfo.ArgumentList.Add(argument);
+        using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("고정 프레임 FFmpeg를 시작하지 못했습니다.");
         var outputTask = process.StandardOutput.ReadToEndAsync();
         var errorTask = process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();

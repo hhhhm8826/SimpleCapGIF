@@ -1,3 +1,4 @@
+using System.Globalization;
 using SimpleCapGIF.Core.Models;
 using SimpleCapGIF.Localization;
 
@@ -21,7 +22,7 @@ public sealed class FfmpegAnimationEncoder(FfmpegToolchain toolchain, AnimationF
 
         try
         {
-            var arguments = CreateArguments(session.TemporaryVideoPath, partialPath);
+            var arguments = CreateArguments(session, partialPath);
             using var process = FfmpegProcess.Start(toolchain.FfmpegPath, arguments, redirectInput: false);
             var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
             var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
@@ -75,19 +76,32 @@ public sealed class FfmpegAnimationEncoder(FfmpegToolchain toolchain, AnimationF
 
     private string DisplayName => Format == AnimationFormat.Gif ? "GIF" : "WebP";
 
-    private string[] CreateArguments(string inputPath, string outputPath) => Format switch
+    private string[] CreateArguments(RecordedSession session, string outputPath)
     {
-        AnimationFormat.Gif =>
-        [
-            "-hide_banner", "-loglevel", "warning", "-i", inputPath,
-            "-filter_complex", "[0:v]split[a][b];[a]palettegen=max_colors=192:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle",
-            "-loop", "0", "-y", outputPath,
-        ],
-        AnimationFormat.WebP =>
-        [
-            "-hide_banner", "-loglevel", "warning", "-i", inputPath,
-            "-an", "-c:v", "libwebp_anim", "-lossless", "0", "-quality", "75", "-compression_level", "4", "-loop", "0", "-y", outputPath,
-        ],
-        _ => throw new InvalidOperationException(AppStrings.UnsupportedFormat),
-    };
+        var timingFilter = CreateTimingFilter(session);
+        return Format switch
+        {
+            AnimationFormat.Gif =>
+            [
+                "-hide_banner", "-loglevel", "warning", "-i", session.TemporaryVideoPath,
+                "-filter_complex", $"[0:v]{timingFilter},split[a][b];[a]palettegen=max_colors=192:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle",
+                "-loop", "0", "-fps_mode", "passthrough", "-y", outputPath,
+            ],
+            AnimationFormat.WebP =>
+            [
+                "-hide_banner", "-loglevel", "warning", "-i", session.TemporaryVideoPath,
+                "-vf", timingFilter,
+                "-an", "-c:v", "libwebp_anim", "-lossless", "0", "-quality", "75", "-compression_level", "4", "-loop", "0", "-fps_mode", "passthrough", "-y", outputPath,
+            ],
+            _ => throw new InvalidOperationException(AppStrings.UnsupportedFormat),
+        };
+    }
+
+    internal static string CreateTimingFilter(RecordedSession session)
+    {
+        var nominalDurationSeconds = session.FrameCount / (double)session.FramesPerSecond;
+        if (nominalDurationSeconds <= 0 || session.Duration <= TimeSpan.Zero) return "settb=AVTB,setpts=PTS";
+        var scale = session.Duration.TotalSeconds / nominalDurationSeconds;
+        return $"settb=AVTB,setpts={scale.ToString("0.########", CultureInfo.InvariantCulture)}*PTS";
+    }
 }

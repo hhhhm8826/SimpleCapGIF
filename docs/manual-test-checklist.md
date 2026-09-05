@@ -64,12 +64,16 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Cursor setting excludes the cursor when off and restores it when on, including scaled and HDR captures
 - [ ] Immediate, 3-second, and 5-second starts work; countdown is centered and excluded from output
 - [ ] Countdown and recording pass mouse input through the visible border for both partial and full-screen capture
-- [ ] F12 starts/stops while another app or a borderless full-screen game has focus
-- [ ] Alt+F9, Ctrl+Shift+R, and disabled hotkey settings persist after restart
+- [ ] Default Alt+F9 starts/stops while another app or a borderless full-screen game has focus
+- [ ] F12, Ctrl+Shift+R, and disabled hotkey settings persist after restart
 - [ ] A conflicting hotkey reports once, leaves toolbar controls usable, and can be changed in Settings
 - [ ] Ctrl+Shift+F12, focused Esc, and the Stop context menu cancel without creating output
 - [ ] Border and toolbar are excluded from output
 - [ ] Estimated size text and red warning at 30 MB
+- [ ] Sustained throughput below 90% shows actual/target FPS after the warm-up and five-second observation window
+- [ ] Throughput between 50% and 90% keeps recording, and the saved GIF/WebP preserves wall-clock duration instead of playing fast
+- [ ] Throughput below 50% for ten observed seconds stops safely; a recovery resets that timer
+- [ ] Two consecutive FFmpeg writes of at least 500 ms still stop immediately
 - [ ] Static and dynamic estimates do not remain strongly biased in one direction
 - [ ] No sustained managed-memory growth during a 60-second recording
 - [ ] Immediately recording a static desktop after launch or after closing the folder picker does not produce a permanent black frame
@@ -82,6 +86,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Changing the toolbar save location persists without requiring a recording
 - [ ] First frame at elapsed time zero does not overflow `TimeSpan`
 - [ ] Stop saves automatically to the current folder
+- [ ] A settings persistence failure after a successful encode reports a settings error while preserving the output file and Completed state
 - [ ] Completed remains for five seconds; clicking it opens the exact output file and returns to Selecting
 - [ ] Same-second name collisions use `_2`, `_3`, and so on
 - [ ] GIF and WebP play in Chrome, Edge, and supported Windows viewers

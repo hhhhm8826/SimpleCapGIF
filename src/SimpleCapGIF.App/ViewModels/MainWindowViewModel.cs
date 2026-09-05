@@ -17,6 +17,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private int _countdownSeconds;
     private TimeSpan _elapsed;
     private long _estimatedBytes;
+    private double _actualFramesPerSecond;
+    private bool _isPerformanceWarning;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -73,6 +75,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
             if (_settings.FramesPerSecond == value) return;
             _settings = (_settings with { FramesPerSecond = value, FpsUserSelected = true }).Validate();
             OnPropertyChanged();
+            OnPropertyChanged(nameof(PerformanceWarningText));
         }
     }
 
@@ -93,6 +96,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(SelectedFormat));
         OnPropertyChanged(nameof(SelectedPreset));
         OnPropertyChanged(nameof(SelectedFps));
+        OnPropertyChanged(nameof(PerformanceWarningText));
         OnPropertyChanged(nameof(OutputSize));
         OnPropertyChanged(nameof(RegionLabel));
     }
@@ -162,6 +166,26 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public string EstimatedText => AppStrings.Format(AppStrings.EstimatedSizeFormat, EstimatedBytes / 1_000_000d);
     public bool IsSizeWarning => EstimatedBytes >= OutputSizeEstimate.WarningThresholdBytes;
+
+    public double ActualFramesPerSecond
+    {
+        get => _actualFramesPerSecond;
+        set
+        {
+            if (SetField(ref _actualFramesPerSecond, value)) OnPropertyChanged(nameof(PerformanceWarningText));
+        }
+    }
+
+    public bool IsPerformanceWarning
+    {
+        get => _isPerformanceWarning;
+        set => SetField(ref _isPerformanceWarning, value);
+    }
+
+    public string PerformanceWarningText => AppStrings.Format(
+        AppStrings.CapturePerformanceWarningFormat,
+        ActualFramesPerSecond,
+        SelectedFps);
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {

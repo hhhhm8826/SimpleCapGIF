@@ -23,6 +23,7 @@ public static class AppStrings
     public static string AnimationSaveFailedFormat => Value();
     public static string AppName => Value();
     public static string CaptureStoppedError => Value();
+    public static string CapturePerformanceWarningFormat => Value();
     public static string CaptureUiExclusionUnavailable => Value();
     public static string ChangeSaveLocation => Value();
     public static string CancelWithoutSaving => Value();

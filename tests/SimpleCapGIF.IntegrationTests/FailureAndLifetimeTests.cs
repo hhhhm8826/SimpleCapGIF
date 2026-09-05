@@ -340,7 +340,7 @@ public sealed class SixtySecondCaptureLifetimeTests
             var session = await capture.StopAsync(CancellationToken.None);
 
             Assert.InRange(session.FrameCount, 250, 310);
-            Assert.Equal(TimeSpan.FromSeconds(session.FrameCount / 5d), session.Duration);
+            Assert.InRange(session.Duration, TimeSpan.FromSeconds(59.5), TimeSpan.FromSeconds(61));
             Assert.True(File.Exists(session.TemporaryVideoPath));
             Assert.True(observer.Samples.Count >= 10);
             Assert.True(observer.Samples[^1] <= observer.Samples[0] + (32 * 1024 * 1024),

@@ -32,7 +32,7 @@ dotnet test tests/SimpleCapGIF.IntegrationTests/SimpleCapGIF.IntegrationTests.cs
 ./scripts/package.ps1
 ```
 
-The result is `artifacts/package/SimpleCapGIF-v0.2.0-win-x64.zip`. Its root contains only the self-contained single-file `SimpleCapGIF.exe` and a `resources` directory. Pinned FFmpeg binaries are under `resources/ffmpeg`; English and Korean user READMEs, image assets, licenses, and third-party notices are under `resources/docs`. Developer documentation is repository-only.
+The result is `artifacts/package/SimpleCapGIF-v0.2.1-win-x64.zip`. Its root contains only the self-contained single-file `SimpleCapGIF.exe` and a `resources` directory. Pinned FFmpeg binaries are under `resources/ffmpeg`; English and Korean user READMEs, image assets, licenses, and third-party notices are under `resources/docs`. Developer documentation is repository-only.
 
 ## Repository map
 

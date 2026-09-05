@@ -91,4 +91,5 @@
   <data name="OpenSavedFileError" xml:space="preserve"><value>Could not open the saved file.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Saved · {0:0.0} MB · Open</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Recording countdown</value></data>
+  <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Performance low · {0:0.0}/{1} FPS</value></data>
 </root>

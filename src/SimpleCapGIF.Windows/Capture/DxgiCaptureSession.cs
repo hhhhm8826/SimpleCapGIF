@@ -20,6 +20,8 @@ public sealed class DxgiCaptureSession : ICaptureSession
     private long _framesWritten;
     private long _bytesWritten;
     private long _backlogTicks;
+    private long _actualFramesPerSecondBits;
+    private int _performanceDegraded;
     private int _stopRequested;
     private bool _disposed;
 
@@ -44,7 +46,9 @@ public sealed class DxgiCaptureSession : ICaptureSession
         _clock?.Elapsed ?? TimeSpan.Zero,
         Interlocked.Read(ref _framesWritten),
         Interlocked.Read(ref _bytesWritten),
-        TimeSpan.FromTicks(Interlocked.Read(ref _backlogTicks)));
+        TimeSpan.FromTicks(Interlocked.Read(ref _backlogTicks)),
+        BitConverter.Int64BitsToDouble(Interlocked.Read(ref _actualFramesPerSecondBits)),
+        Volatile.Read(ref _performanceDegraded) != 0);
 
     public Task? Completion
     {
@@ -90,6 +94,8 @@ public sealed class DxgiCaptureSession : ICaptureSession
             _framesWritten = 0;
             _bytesWritten = 0;
             _backlogTicks = 0;
+            _actualFramesPerSecondBits = BitConverter.DoubleToInt64Bits(request.FramesPerSecond);
+            _performanceDegraded = 0;
             _stopRequested = 0;
             _captureTask = Task.Factory.StartNew(
                 () => CaptureLoopAsync(request, videoPath, process, initialized, lifetimeCancellation.Token),
@@ -151,6 +157,7 @@ public sealed class DxgiCaptureSession : ICaptureSession
         var frameDurationTicks = Stopwatch.Frequency / (double)request.FramesPerSecond;
         var nextFrameTimestamp = 0L;
         var consecutiveSlowWrites = 0;
+        var performanceMonitor = new CapturePerformanceMonitor(request.FramesPerSecond);
 
         try
         {
@@ -189,9 +196,17 @@ public sealed class DxgiCaptureSession : ICaptureSession
                     throw new InvalidOperationException(AppStrings.PerformanceTooSlow);
                 }
 
-                Interlocked.Increment(ref _framesWritten);
+                var framesWritten = Interlocked.Increment(ref _framesWritten);
                 Interlocked.Add(ref _bytesWritten, frame.Length);
-                if (_framesWritten % (request.FramesPerSecond * 2L) == 0)
+                var performance = performanceMonitor.Observe(_clock?.Elapsed ?? TimeSpan.Zero, framesWritten);
+                Interlocked.Exchange(ref _actualFramesPerSecondBits, BitConverter.DoubleToInt64Bits(performance.ActualFramesPerSecond));
+                Volatile.Write(ref _performanceDegraded, performance.IsDegraded ? 1 : 0);
+                if (performance.ShouldStop)
+                {
+                    throw new InvalidOperationException(AppStrings.PerformanceTooSlow);
+                }
+
+                if (framesWritten % (request.FramesPerSecond * 2L) == 0)
                 {
                     EnsureDiskSpace(request.SessionDirectory, request.OutputSize.Area * 4 * request.FramesPerSecond * 5);
                 }
@@ -202,6 +217,7 @@ public sealed class DxgiCaptureSession : ICaptureSession
                     (long)frameDurationTicks);
             }
 
+            var captureDuration = _clock?.Elapsed ?? TimeSpan.Zero;
             await process.StandardInput.BaseStream.FlushAsync(cancellationToken).ConfigureAwait(false);
             process.StandardInput.Close();
             var exitCode = await FfmpegProcess.WaitForExitAsync(process, cancellationToken).ConfigureAwait(false);
@@ -213,7 +229,8 @@ public sealed class DxgiCaptureSession : ICaptureSession
             }
 
             var frames = Interlocked.Read(ref _framesWritten);
-            return new RecordedSession(videoPath, request.OutputSize, request.FramesPerSecond, TimeSpan.FromSeconds(frames / (double)request.FramesPerSecond), frames);
+            var minimumDuration = TimeSpan.FromSeconds(1d / request.FramesPerSecond);
+            return new RecordedSession(videoPath, request.OutputSize, request.FramesPerSecond, captureDuration < minimumDuration ? minimumDuration : captureDuration, frames);
         }
         catch (Exception exception)
         {

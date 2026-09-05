@@ -77,7 +77,7 @@ public partial class MainWindow : Window
         _statisticsTimer.Tick += OnStatisticsTick;
         _viewModel.PropertyChanged += (_, args) =>
         {
-            if (args.PropertyName is nameof(MainWindowViewModel.Region) or nameof(MainWindowViewModel.State)) UpdateVisualLayout();
+            if (args.PropertyName is nameof(MainWindowViewModel.Region) or nameof(MainWindowViewModel.State) or nameof(MainWindowViewModel.IsPerformanceWarning)) UpdateVisualLayout();
             if (args.PropertyName == nameof(MainWindowViewModel.SelectedPreset)) OnSelectedPresetChanged();
         };
     }
@@ -271,6 +271,8 @@ public partial class MainWindow : Window
             _captureSession = new DxgiCaptureSession(_toolchain, _sampleEstimator);
             _viewModel.Elapsed = TimeSpan.Zero;
             _viewModel.EstimatedBytes = 0;
+            _viewModel.ActualFramesPerSecond = _viewModel.SelectedFps;
+            _viewModel.IsPerformanceWarning = false;
             var outputSize = _viewModel.OutputSize;
             var calibrationKey = GetCalibrationKey();
             var calibration = _calibrationRatios.GetValueOrDefault(calibrationKey, 1d);
@@ -336,10 +338,11 @@ public partial class MainWindow : Window
             _viewModel.EstimatedBytes = result.Bytes;
             _lastOutputPath = result.Path;
             _viewModel.StatusText = AppStrings.Format(AppStrings.SavedSizeOpenFormat, result.Bytes / 1_000_000d);
-            await SaveSettingsAsync();
             CleanupSession();
             _stateMachine.Complete();
             _viewModel.State = CaptureUiState.Completed;
+            var settingsSaveError = await TrySaveSettingsAsync(SaveSettingsAsync);
+            if (settingsSaveError is not null) ShowError(AppStrings.SaveSettingsError, settingsSaveError);
             StartCompletionTimeout();
         }
         catch (OperationCanceledException)
@@ -366,6 +369,8 @@ public partial class MainWindow : Window
         var statistics = _captureSession.Statistics;
         _viewModel.Elapsed = statistics.Elapsed;
         _viewModel.EstimatedBytes = _sizeEstimator.GetEstimate(statistics.Elapsed).Bytes;
+        _viewModel.ActualFramesPerSecond = statistics.ActualFramesPerSecond;
+        _viewModel.IsPerformanceWarning = statistics.IsPerformanceDegraded;
     }
 
     private async Task PrepareDesktopForCaptureAsync(CancellationToken cancellationToken)
@@ -625,6 +630,20 @@ public partial class MainWindow : Window
         });
     }
 
+    internal static async Task<Exception?> TrySaveSettingsAsync(Func<Task> saveSettings)
+    {
+        ArgumentNullException.ThrowIfNull(saveSettings);
+        try
+        {
+            await saveSettings();
+            return null;
+        }
+        catch (Exception exception)
+        {
+            return exception;
+        }
+    }
+
     private async Task AbortCurrentOperationAsync()
     {
         _statisticsTimer.Stop();
@@ -659,6 +678,7 @@ public partial class MainWindow : Window
         _deferSelectingToolbarPlacement = true;
         _viewModel.State = CaptureUiState.Selecting;
         _viewModel.CountdownSeconds = 0;
+        _viewModel.IsPerformanceWarning = false;
         _operationCancellation?.Dispose();
         _operationCancellation = null;
         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
