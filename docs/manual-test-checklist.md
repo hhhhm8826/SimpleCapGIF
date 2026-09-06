@@ -63,6 +63,9 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] Mouse position and shape are included
 - [ ] Cursor setting excludes the cursor when off and restores it when on, including scaled and HDR captures
 - [ ] Immediate, 3-second, and 5-second starts work; countdown is centered and excluded from output
+- [ ] Auto-stop and save defaults to Manual; 3/5/10/15/30-second choices persist after restart
+- [ ] Each automatic duration starts from actual capture start, stops once, saves normally, and copies the completed file to the clipboard
+- [ ] Manual stop or cancel before the configured duration cancels the automatic timer without a duplicate stop or save
 - [ ] Countdown and recording pass mouse input through the visible border for both partial and full-screen capture
 - [ ] Default Alt+F9 starts/stops while another app or a borderless full-screen game has focus
 - [ ] F12, Ctrl+Shift+R, and disabled hotkey settings persist after restart

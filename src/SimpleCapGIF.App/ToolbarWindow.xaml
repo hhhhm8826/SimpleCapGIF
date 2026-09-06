@@ -161,6 +161,14 @@
                 <MenuItem x:Name="ThreeSecondDelayMenuItem" Header="{x:Static localization:AppStrings.StartDelayThreeSeconds}" IsCheckable="True" Tag="3" Click="OnStartDelayClick" />
                 <MenuItem x:Name="FiveSecondDelayMenuItem" Header="{x:Static localization:AppStrings.StartDelayFiveSeconds}" IsCheckable="True" Tag="5" Click="OnStartDelayClick" />
               </MenuItem>
+              <MenuItem Header="{x:Static localization:AppStrings.AutomaticStopAndSave}">
+                <MenuItem x:Name="ManualAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.Manual}" IsCheckable="True" Tag="0" Click="OnAutomaticStopClick" />
+                <MenuItem x:Name="ThreeSecondAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.StartDelayThreeSeconds}" IsCheckable="True" Tag="3" Click="OnAutomaticStopClick" />
+                <MenuItem x:Name="FiveSecondAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.StartDelayFiveSeconds}" IsCheckable="True" Tag="5" Click="OnAutomaticStopClick" />
+                <MenuItem x:Name="TenSecondAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.TenSeconds}" IsCheckable="True" Tag="10" Click="OnAutomaticStopClick" />
+                <MenuItem x:Name="FifteenSecondAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.FifteenSeconds}" IsCheckable="True" Tag="15" Click="OnAutomaticStopClick" />
+                <MenuItem x:Name="ThirtySecondAutomaticStopMenuItem" Header="{x:Static localization:AppStrings.ThirtySeconds}" IsCheckable="True" Tag="30" Click="OnAutomaticStopClick" />
+              </MenuItem>
               <MenuItem Header="{x:Static localization:AppStrings.RecordingHotKey}">
                 <MenuItem x:Name="F12HotKeyMenuItem" Header="F12" IsCheckable="True" Tag="F12" Click="OnHotKeyClick" />
                 <MenuItem x:Name="AltF9HotKeyMenuItem" Header="Alt+F9" IsCheckable="True" Tag="AltF9" Click="OnHotKeyClick" />

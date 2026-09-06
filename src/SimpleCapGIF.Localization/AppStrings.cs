@@ -22,6 +22,7 @@ public static class AppStrings
     public static string AlreadyRecording => Value();
     public static string AnimationSaveFailedFormat => Value();
     public static string AppName => Value();
+    public static string AutomaticStopAndSave => Value();
     public static string CaptureStoppedError => Value();
     public static string CapturePerformanceWarningFormat => Value();
     public static string CopySavedFileError => Value();
@@ -42,6 +43,7 @@ public static class AppStrings
     public static string FfmpegChecksumMismatch => Value();
     public static string FfmpegMissing => Value();
     public static string FfmpegStartFailed => Value();
+    public static string FifteenSeconds => Value();
     public static string Folder => Value();
     public static string FolderDialogTitle => Value();
     public static string FormatLabel => Value();
@@ -63,6 +65,7 @@ public static class AppStrings
     public static string InvalidStateReturnFormat => Value();
     public static string InvalidStateTransitionFormat => Value();
     public static string Location => Value();
+    public static string Manual => Value();
     public static string MoveCaptureRegion => Value();
     public static string NoDisplayOutput => Value();
     public static string NotRecording => Value();
@@ -96,6 +99,8 @@ public static class AppStrings
     public static string StorageDeviceUnavailable => Value();
     public static string Settings => Value();
     public static string TempCaptureFailedFormat => Value();
+    public static string TenSeconds => Value();
+    public static string ThirtySeconds => Value();
     public static string ToolbarTitle => Value();
     public static string UnexpectedSessionPath => Value();
     public static string UnsupportedFormat => Value();

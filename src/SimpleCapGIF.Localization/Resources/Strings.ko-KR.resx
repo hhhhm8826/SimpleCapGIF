@@ -91,4 +91,9 @@
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>저장 완료 · {0:0.0} MB · 열기</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>녹화 시작 카운트다운</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>성능 저하 · {0:0.0}/{1} FPS</value></data>
+  <data name="AutomaticStopAndSave" xml:space="preserve"><value>자동 종료 및 저장</value></data>
+  <data name="Manual" xml:space="preserve"><value>수동</value></data>
+  <data name="TenSeconds" xml:space="preserve"><value>10초</value></data>
+  <data name="FifteenSeconds" xml:space="preserve"><value>15초</value></data>
+  <data name="ThirtySeconds" xml:space="preserve"><value>30초</value></data>
 </root>

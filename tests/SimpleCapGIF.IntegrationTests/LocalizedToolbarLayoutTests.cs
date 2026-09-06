@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using SimpleCapGIF.App;
 using SimpleCapGIF.App.ViewModels;
+using SimpleCapGIF.Core.Models;
 using SimpleCapGIF.Localization;
 
 namespace SimpleCapGIF.IntegrationTests;
@@ -41,6 +42,8 @@ public sealed class LocalizedToolbarLayoutTests
                     var exit = Assert.IsType<Button>(toolbar.FindName("ExitButton"));
                     var settings = Assert.IsType<Button>(toolbar.FindName("SettingsButton"));
                     var frameRate = Assert.IsType<ComboBox>(toolbar.FindName("FrameRateComboBox"));
+                    var manualAutomaticStop = Assert.IsType<MenuItem>(toolbar.FindName("ManualAutomaticStopMenuItem"));
+                    var thirtySecondAutomaticStop = Assert.IsType<MenuItem>(toolbar.FindName("ThirtySecondAutomaticStopMenuItem"));
 
                     Assert.Equal(AppStrings.Record, record.ToolTip);
                     Assert.Equal(AppStrings.Record, AutomationProperties.GetName(record));
@@ -50,6 +53,9 @@ public sealed class LocalizedToolbarLayoutTests
                     Assert.Equal(AppStrings.Settings, settings.ToolTip);
                     Assert.Equal(AppStrings.Settings, AutomationProperties.GetName(settings));
                     Assert.True(record.ActualWidth > 0 && frameRate.ActualWidth > 0 && settings.ActualWidth > 0 && exit.ActualWidth > 0, culture.Name);
+                    toolbar.SetRecordingPreferences(RecordingPreferences.Default with { AutomaticStopSeconds = 30 });
+                    Assert.False(manualAutomaticStop.IsChecked);
+                    Assert.True(thirtySecondAutomaticStop.IsChecked);
 
                     var exitRight = exit.TranslatePoint(new Point(exit.ActualWidth, 0), root).X;
                     var frameRateRight = frameRate.TranslatePoint(new Point(frameRate.ActualWidth, 0), root).X;

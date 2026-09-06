@@ -36,4 +36,9 @@
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Guardado · {0:0.0} MB · Abrir</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Cuenta atrás de grabación</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Rendimiento bajo · {0:0.0}/{1} FPS</value></data>
+  <data name="AutomaticStopAndSave" xml:space="preserve"><value>Detener y guardar automáticamente</value></data>
+  <data name="Manual" xml:space="preserve"><value>Manual</value></data>
+  <data name="TenSeconds" xml:space="preserve"><value>10 segundos</value></data>
+  <data name="FifteenSeconds" xml:space="preserve"><value>15 segundos</value></data>
+  <data name="ThirtySeconds" xml:space="preserve"><value>30 segundos</value></data>
 </root>

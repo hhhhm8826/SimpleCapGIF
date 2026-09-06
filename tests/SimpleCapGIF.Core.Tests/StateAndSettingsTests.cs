@@ -97,6 +97,7 @@ public sealed class StateAndSettingsTests
             {
                 IncludeCursor = false,
                 StartDelaySeconds = 3,
+                AutomaticStopSeconds = 15,
                 GlobalHotKey = GlobalHotKeyPreset.AltF9,
             },
             LastCustomRegionSize = new PixelSize(960, 540),
@@ -147,11 +148,44 @@ public sealed class StateAndSettingsTests
     [InlineData(1)]
     [InlineData(4)]
     [InlineData(10)]
-    public void RecordingPreferencesNormalizeUnsupportedDelay(int seconds)
+    public void RecordingPreferencesNormalizeUnsupportedStartDelay(int seconds)
     {
         var preferences = RecordingPreferences.Default with { StartDelaySeconds = seconds };
 
         Assert.Equal(0, preferences.Validate().StartDelaySeconds);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(20)]
+    [InlineData(31)]
+    public void RecordingPreferencesNormalizeUnsupportedAutomaticStop(int seconds)
+    {
+        var preferences = RecordingPreferences.Default with { AutomaticStopSeconds = seconds };
+
+        Assert.Equal(0, preferences.Validate().AutomaticStopSeconds);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(3)]
+    [InlineData(5)]
+    [InlineData(10)]
+    [InlineData(15)]
+    [InlineData(30)]
+    public void RecordingPreferencesAllowSupportedAutomaticStop(int seconds)
+    {
+        var preferences = RecordingPreferences.Default with { AutomaticStopSeconds = seconds };
+
+        Assert.Equal(seconds, preferences.Validate().AutomaticStopSeconds);
+    }
+
+    [Fact]
+    public void RecordingPreferencesDefaultToManualStop()
+    {
+        Assert.Equal(0, RecordingPreferences.Default.AutomaticStopSeconds);
     }
 
     [Fact]

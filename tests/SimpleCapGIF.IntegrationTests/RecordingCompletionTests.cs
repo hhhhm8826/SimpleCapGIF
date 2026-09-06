@@ -51,4 +51,40 @@ public sealed class RecordingCompletionTests
 
         Assert.Same(expected, error);
     }
+
+    [Fact]
+    public async Task AutomaticStopInvokesRecordingStopAfterDelay()
+    {
+        var stopped = false;
+
+        await MainWindow.WaitForAutomaticStopAsync(
+            TimeSpan.FromMilliseconds(10),
+            () =>
+            {
+                stopped = true;
+                return Task.CompletedTask;
+            },
+            CancellationToken.None);
+
+        Assert.True(stopped);
+    }
+
+    [Fact]
+    public async Task CanceledAutomaticStopDoesNotInvokeRecordingStop()
+    {
+        var stopped = false;
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MainWindow.WaitForAutomaticStopAsync(
+            TimeSpan.FromSeconds(1),
+            () =>
+            {
+                stopped = true;
+                return Task.CompletedTask;
+            },
+            cancellation.Token));
+
+        Assert.False(stopped);
+    }
 }

@@ -37,4 +37,9 @@
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>已保存 · {0:0.0} MB · 打开</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>录制开始倒计时</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>性能下降 · {0:0.0}/{1} FPS</value></data>
+  <data name="AutomaticStopAndSave" xml:space="preserve"><value>自动停止并保存</value></data>
+  <data name="Manual" xml:space="preserve"><value>手动</value></data>
+  <data name="TenSeconds" xml:space="preserve"><value>10 秒</value></data>
+  <data name="FifteenSeconds" xml:space="preserve"><value>15 秒</value></data>
+  <data name="ThirtySeconds" xml:space="preserve"><value>30 秒</value></data>
 </root>

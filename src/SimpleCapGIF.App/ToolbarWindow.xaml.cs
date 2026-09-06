@@ -25,6 +25,7 @@ public partial class ToolbarWindow : Window
     public event EventHandler? ExitRequested;
     public event Action<bool>? IncludeCursorRequested;
     public event Action<int>? StartDelayRequested;
+    public event Action<int>? AutomaticStopRequested;
     public event Action<GlobalHotKeyPreset>? GlobalHotKeyRequested;
     public event Action<Exception>? CaptureExclusionFailed;
 
@@ -39,6 +40,12 @@ public partial class ToolbarWindow : Window
         ImmediateDelayMenuItem.IsChecked = preferences.StartDelaySeconds == 0;
         ThreeSecondDelayMenuItem.IsChecked = preferences.StartDelaySeconds == 3;
         FiveSecondDelayMenuItem.IsChecked = preferences.StartDelaySeconds == 5;
+        ManualAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 0;
+        ThreeSecondAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 3;
+        FiveSecondAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 5;
+        TenSecondAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 10;
+        FifteenSecondAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 15;
+        ThirtySecondAutomaticStopMenuItem.IsChecked = preferences.AutomaticStopSeconds == 30;
         F12HotKeyMenuItem.IsChecked = preferences.GlobalHotKey == GlobalHotKeyPreset.F12;
         AltF9HotKeyMenuItem.IsChecked = preferences.GlobalHotKey == GlobalHotKeyPreset.AltF9;
         ControlShiftRHotKeyMenuItem.IsChecked = preferences.GlobalHotKey == GlobalHotKeyPreset.ControlShiftR;
@@ -96,6 +103,14 @@ public partial class ToolbarWindow : Window
         if (sender is MenuItem { Tag: string value } && int.TryParse(value, out var seconds))
         {
             StartDelayRequested?.Invoke(seconds);
+        }
+    }
+
+    private void OnAutomaticStopClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string value } && int.TryParse(value, out var seconds))
+        {
+            AutomaticStopRequested?.Invoke(seconds);
         }
     }
 

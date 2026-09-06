@@ -49,6 +49,7 @@ public partial class MainWindow : Window
     private ToolbarWindow? _toolbarWindow;
     private CancellationTokenSource? _operationCancellation;
     private CancellationTokenSource? _completionCancellation;
+    private CancellationTokenSource? _automaticStopCancellation;
     private GlobalHotKeyService? _globalHotKeys;
     private RecordingPreferences _recordingPreferences = RecordingPreferences.Default;
     private string? _lastOutputPath;
@@ -286,6 +287,7 @@ public partial class MainWindow : Window
             await PrepareDesktopForCaptureAsync(_operationCancellation.Token);
             await _captureSession.StartAsync(request, _operationCancellation.Token);
             _statisticsTimer.Start();
+            StartAutomaticStopTimer();
             _ = ObserveCaptureFailureAsync(_captureSession, _operationCancellation.Token);
         }
         catch (OperationCanceledException) when (_operationCancellation?.IsCancellationRequested == true)
@@ -314,6 +316,7 @@ public partial class MainWindow : Window
         try
         {
             if (_viewModel.State != CaptureUiState.Recording || _captureSession is null || _toolchain is null) return;
+            CancelAutomaticStopTimer();
             _statisticsTimer.Stop();
             _stateMachine.StartEncoding();
             _viewModel.State = CaptureUiState.Encoding;
@@ -470,11 +473,52 @@ public partial class MainWindow : Window
         }
     }
 
+    private void StartAutomaticStopTimer()
+    {
+        CancelAutomaticStopTimer();
+        if (_recordingPreferences.AutomaticStopSeconds == 0) return;
+        _automaticStopCancellation = new CancellationTokenSource();
+        _ = StopAfterConfiguredDurationAsync(
+            TimeSpan.FromSeconds(_recordingPreferences.AutomaticStopSeconds),
+            _automaticStopCancellation.Token);
+    }
+
+    private async Task StopAfterConfiguredDurationAsync(TimeSpan duration, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await WaitForAutomaticStopAsync(duration, StopRecordingAsync, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+        }
+    }
+
+    internal static async Task WaitForAutomaticStopAsync(TimeSpan duration, Func<Task> stopRecording, CancellationToken cancellationToken)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(duration, TimeSpan.Zero);
+        ArgumentNullException.ThrowIfNull(stopRecording);
+        await Task.Delay(duration, cancellationToken);
+        await stopRecording();
+    }
+
+    private void CancelAutomaticStopTimer()
+    {
+        var cancellation = _automaticStopCancellation;
+        _automaticStopCancellation = null;
+        if (cancellation is null) return;
+        cancellation.Cancel();
+        cancellation.Dispose();
+    }
+
     private void OnIncludeCursorRequested(bool includeCursor) =>
         _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { IncludeCursor = includeCursor });
 
     private void OnStartDelayRequested(int seconds) =>
         _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { StartDelaySeconds = seconds });
+
+    private void OnAutomaticStopRequested(int seconds) =>
+        _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { AutomaticStopSeconds = seconds });
 
     private void OnGlobalHotKeyRequested(GlobalHotKeyPreset preset) =>
         _ = UpdateRecordingPreferencesAsync(_recordingPreferences with { GlobalHotKey = preset });
@@ -590,6 +634,7 @@ public partial class MainWindow : Window
 
     private async void OnClosing(object? sender, CancelEventArgs e)
     {
+        CancelAutomaticStopTimer();
         _globalHotKeys?.Dispose();
         _globalHotKeys = null;
         _completionCancellation?.Cancel();
@@ -665,6 +710,7 @@ public partial class MainWindow : Window
 
     private async Task AbortCurrentOperationAsync()
     {
+        CancelAutomaticStopTimer();
         _statisticsTimer.Stop();
         _operationCancellation?.Cancel();
         if (_captureSession is not null)
@@ -693,6 +739,7 @@ public partial class MainWindow : Window
 
     private void ReturnToSelecting()
     {
+        CancelAutomaticStopTimer();
         if (_stateMachine.State != CaptureUiState.Selecting) _stateMachine.ReturnToSelecting();
         _deferSelectingToolbarPlacement = true;
         _viewModel.State = CaptureUiState.Selecting;
@@ -791,6 +838,7 @@ public partial class MainWindow : Window
         _toolbarWindow.OpenFolderRequested += OnOpenFolderClick;
         _toolbarWindow.IncludeCursorRequested += OnIncludeCursorRequested;
         _toolbarWindow.StartDelayRequested += OnStartDelayRequested;
+        _toolbarWindow.AutomaticStopRequested += OnAutomaticStopRequested;
         _toolbarWindow.GlobalHotKeyRequested += OnGlobalHotKeyRequested;
         _toolbarWindow.ExitRequested += OnExitRequested;
         _toolbarWindow.CaptureExclusionFailed += exception => _captureExclusionError = exception;
