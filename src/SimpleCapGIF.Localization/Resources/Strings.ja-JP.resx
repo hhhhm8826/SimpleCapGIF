@@ -86,6 +86,8 @@
   <data name="SaveSettingsError" xml:space="preserve"><value>設定を保存できませんでした。</value></data>
   <data name="OpenSavedFile" xml:space="preserve"><value>保存したファイルを開く</value></data>
   <data name="OpenSavedFileError" xml:space="preserve"><value>保存したファイルを開けませんでした。</value></data>
+  <data name="SavedSizeCopiedOpenFormat" xml:space="preserve"><value>保存完了 · {0:0.0} MB · コピー済み · 開く</value></data>
+  <data name="CopySavedFileError" xml:space="preserve"><value>保存したファイルをクリップボードにコピーできませんでした。</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>保存完了 · {0:0.0} MB · 開く</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>録画開始カウントダウン</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>性能低下 · {0:0.0}/{1} FPS</value></data>

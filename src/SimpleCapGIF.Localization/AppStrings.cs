@@ -24,6 +24,7 @@ public static class AppStrings
     public static string AppName => Value();
     public static string CaptureStoppedError => Value();
     public static string CapturePerformanceWarningFormat => Value();
+    public static string CopySavedFileError => Value();
     public static string CaptureUiExclusionUnavailable => Value();
     public static string ChangeSaveLocation => Value();
     public static string CancelWithoutSaving => Value();
@@ -80,6 +81,7 @@ public static class AppStrings
     public static string SaveAnimationErrorFormat => Value();
     public static string Saved => Value();
     public static string SavedSizeFormat => Value();
+    public static string SavedSizeCopiedOpenFormat => Value();
     public static string SavedSizeOpenFormat => Value();
     public static string SaveFolderSettingsError => Value();
     public static string SaveSettingsError => Value();

@@ -86,6 +86,8 @@
   <data name="SaveSettingsError" xml:space="preserve"><value>설정을 저장하지 못했습니다.</value></data>
   <data name="OpenSavedFile" xml:space="preserve"><value>저장된 파일 열기</value></data>
   <data name="OpenSavedFileError" xml:space="preserve"><value>저장된 파일을 열지 못했습니다.</value></data>
+  <data name="SavedSizeCopiedOpenFormat" xml:space="preserve"><value>저장 완료 · {0:0.0} MB · 복사됨 · 열기</value></data>
+  <data name="CopySavedFileError" xml:space="preserve"><value>저장된 파일을 클립보드에 복사하지 못했습니다.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>저장 완료 · {0:0.0} MB · 열기</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>녹화 시작 카운트다운</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>성능 저하 · {0:0.0}/{1} FPS</value></data>

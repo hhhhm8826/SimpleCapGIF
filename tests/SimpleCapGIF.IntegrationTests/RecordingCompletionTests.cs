@@ -29,4 +29,26 @@ public sealed class RecordingCompletionTests
 
         Assert.Same(expected, error);
     }
+
+    [Fact]
+    public void SuccessfulClipboardCopyReturnsNoError()
+    {
+        const string path = @"C:\recordings\capture.gif";
+        string? copiedPath = null;
+
+        var error = MainWindow.TryCopySavedFile(path, value => copiedPath = value);
+
+        Assert.Equal(path, copiedPath);
+        Assert.Null(error);
+    }
+
+    [Fact]
+    public void ClipboardCopyFailureIsReturnedWithoutChangingSaveCompletion()
+    {
+        var expected = new IOException("Clipboard is busy.");
+
+        var error = MainWindow.TryCopySavedFile(@"C:\recordings\capture.webp", _ => throw expected);
+
+        Assert.Same(expected, error);
+    }
 }

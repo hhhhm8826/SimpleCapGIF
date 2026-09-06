@@ -89,6 +89,7 @@ When a check fails, record the Windows version, UI language, monitor layout and 
 - [ ] A settings persistence failure after a successful encode reports a settings error while preserving the output file and Completed state
 - [ ] Completed remains for five seconds; clicking it opens the exact output file and returns to Selecting
 - [ ] Clicking a completed GIF uses its Windows file association; clicking a completed WebP opens it in Microsoft Edge
+- [ ] Completing a GIF/WebP automatically places the saved file on the Windows clipboard and reports that it was copied
 - [ ] Same-second name collisions use `_2`, `_3`, and so on
 - [ ] GIF and WebP play in Chrome, Edge, and supported Windows viewers
 - [ ] Both formats loop forever

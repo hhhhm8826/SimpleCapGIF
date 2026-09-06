@@ -31,6 +31,8 @@
   <data name="SaveSettingsError" xml:space="preserve"><value>Die Einstellungen konnten nicht gespeichert werden.</value></data>
   <data name="OpenSavedFile" xml:space="preserve"><value>Gespeicherte Datei öffnen</value></data>
   <data name="OpenSavedFileError" xml:space="preserve"><value>Die gespeicherte Datei konnte nicht geöffnet werden.</value></data>
+  <data name="SavedSizeCopiedOpenFormat" xml:space="preserve"><value>Gespeichert · {0:0.0} MB · Kopiert · Öffnen</value></data>
+  <data name="CopySavedFileError" xml:space="preserve"><value>Die gespeicherte Datei konnte nicht in die Zwischenablage kopiert werden.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Gespeichert · {0:0.0} MB · Öffnen</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Aufnahme-Countdown</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Leistung niedrig · {0:0.0}/{1} FPS</value></data>

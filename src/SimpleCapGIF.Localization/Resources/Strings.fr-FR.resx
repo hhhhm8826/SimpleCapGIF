@@ -31,6 +31,8 @@
   <data name="SaveSettingsError" xml:space="preserve"><value>Impossible d’enregistrer les paramètres.</value></data>
   <data name="OpenSavedFile" xml:space="preserve"><value>Ouvrir le fichier enregistré</value></data>
   <data name="OpenSavedFileError" xml:space="preserve"><value>Impossible d’ouvrir le fichier enregistré.</value></data>
+  <data name="SavedSizeCopiedOpenFormat" xml:space="preserve"><value>Enregistré · {0:0.0} MB · Copié · Ouvrir</value></data>
+  <data name="CopySavedFileError" xml:space="preserve"><value>Impossible de copier le fichier enregistré dans le presse-papiers.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Enregistré · {0:0.0} MB · Ouvrir</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Compte à rebours d’enregistrement</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Performances faibles · {0:0.0}/{1} FPS</value></data>

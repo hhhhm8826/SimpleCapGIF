@@ -337,10 +337,14 @@ public partial class MainWindow : Window
             }
             _viewModel.EstimatedBytes = result.Bytes;
             _lastOutputPath = result.Path;
-            _viewModel.StatusText = AppStrings.Format(AppStrings.SavedSizeOpenFormat, result.Bytes / 1_000_000d);
+            var clipboardError = TryCopySavedFile(_lastOutputPath, SavedFileClipboard.Copy);
+            _viewModel.StatusText = AppStrings.Format(
+                clipboardError is null ? AppStrings.SavedSizeCopiedOpenFormat : AppStrings.SavedSizeOpenFormat,
+                result.Bytes / 1_000_000d);
             CleanupSession();
             _stateMachine.Complete();
             _viewModel.State = CaptureUiState.Completed;
+            if (clipboardError is not null) ShowError(AppStrings.CopySavedFileError, clipboardError);
             var settingsSaveError = await TrySaveSettingsAsync(SaveSettingsAsync);
             if (settingsSaveError is not null) ShowError(AppStrings.SaveSettingsError, settingsSaveError);
             StartCompletionTimeout();
@@ -636,6 +640,21 @@ public partial class MainWindow : Window
         try
         {
             await saveSettings();
+            return null;
+        }
+        catch (Exception exception)
+        {
+            return exception;
+        }
+    }
+
+    internal static Exception? TryCopySavedFile(string path, Action<string> copyFile)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(copyFile);
+        try
+        {
+            copyFile(path);
             return null;
         }
         catch (Exception exception)

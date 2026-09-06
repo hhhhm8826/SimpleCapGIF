@@ -89,6 +89,8 @@
   <data name="SaveSettingsError" xml:space="preserve"><value>Could not save the settings.</value></data>
   <data name="OpenSavedFile" xml:space="preserve"><value>Open saved file</value></data>
   <data name="OpenSavedFileError" xml:space="preserve"><value>Could not open the saved file.</value></data>
+  <data name="SavedSizeCopiedOpenFormat" xml:space="preserve"><value>Saved · {0:0.0} MB · Copied · Open</value></data>
+  <data name="CopySavedFileError" xml:space="preserve"><value>Could not copy the saved file to the clipboard.</value></data>
   <data name="SavedSizeOpenFormat" xml:space="preserve"><value>Saved · {0:0.0} MB · Open</value></data>
   <data name="RecordingCountdown" xml:space="preserve"><value>Recording countdown</value></data>
   <data name="CapturePerformanceWarningFormat" xml:space="preserve"><value>Performance low · {0:0.0}/{1} FPS</value></data>
