@@ -16,7 +16,7 @@ SimpleCapGIF은 Windows 10/11 x64용 간단한 GIF·Animated WebP 영역 녹화�
 
 ## 시작하기
 
-1. `SimpleCapGIF-v0.2.0-win-x64.zip`을 내려받아 압축을 풉니다. `resources` 폴더는 `SimpleCapGIF.exe` 옆에 그대로 둡니다.
+1. `SimpleCapGIF-v0.2.2-win-x64.zip`을 내려받아 압축을 풉니다. `resources` 폴더는 `SimpleCapGIF.exe` 옆에 그대로 둡니다.
 2. `SimpleCapGIF.exe`를 실행합니다. 최초 실행에서는 저장 폴더를 선택하며, 취소하면 앱이 종료됩니다.
 3. 검정 테두리 안쪽을 드래그해 영역을 이동하고 8개의 핸들로 크기를 조절합니다.
 4. 도구 모음 둘째 줄에서 GIF/WebP, 출력 크기, FPS를 선택합니다.

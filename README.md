@@ -16,7 +16,7 @@ SimpleCapGIF is a minimal region recorder for GIF and Animated WebP on Windows 1
 
 ## Get started
 
-1. Download and extract `SimpleCapGIF-v0.2.0-win-x64.zip`. Keep the `resources` folder next to `SimpleCapGIF.exe`.
+1. Download and extract `SimpleCapGIF-v0.2.2-win-x64.zip`. Keep the `resources` folder next to `SimpleCapGIF.exe`.
 2. Run `SimpleCapGIF.exe`. On first launch, choose a save folder. Canceling closes the app.
 3. Drag inside the black border to move the region, or use the eight handles to resize it.
 4. Choose GIF/WebP, output size, and FPS from the second toolbar row.
