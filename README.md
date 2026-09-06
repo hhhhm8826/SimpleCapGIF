@@ -31,7 +31,7 @@ SimpleCapGIF is a minimal region recorder for GIF and Animated WebP on Windows 1
 - **Capture performance:** If capture throughput remains below 90% of the selected FPS, the toolbar shows actual/target FPS. The saved animation keeps the real recording duration, and recording may stop if throughput becomes excessively slow.
 - **Cancel without saving:** Press **Ctrl+Shift+F12**, right-click Stop, or press **Esc** while SimpleCapGIF has focus.
 - **Recording settings:** Use the gear menu to include or hide the cursor, choose an immediate, 3-second, or 5-second delay, and change or disable the global hotkey.
-- **Files:** **Location** changes the save folder and **Folder** opens it. Click the completion message within five seconds to open the saved file.
+- **Files:** **Location** changes the save folder and **Folder** opens it. Click the completion message within five seconds to open the saved file; WebP opens in Microsoft Edge.
 
 ## Languages
 

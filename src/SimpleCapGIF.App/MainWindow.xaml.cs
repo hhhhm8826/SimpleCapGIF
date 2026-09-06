@@ -436,7 +436,7 @@ public partial class MainWindow : Window
         try
         {
             if (!File.Exists(_lastOutputPath)) throw new FileNotFoundException(AppStrings.OpenSavedFileError, _lastOutputPath);
-            Process.Start(new ProcessStartInfo(_lastOutputPath) { UseShellExecute = true });
+            SavedFileLauncher.Open(_lastOutputPath);
             _completionCancellation?.Cancel();
             ReturnToSelecting();
         }
